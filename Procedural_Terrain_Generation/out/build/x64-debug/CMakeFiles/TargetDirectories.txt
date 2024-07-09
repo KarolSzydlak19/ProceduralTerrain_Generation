@@ -1,0 +1,4 @@
+C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/out/build/x64-debug/CMakeFiles/glad.dir
+C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/out/build/x64-debug/CMakeFiles/MyProject.dir
+C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/out/build/x64-debug/CMakeFiles/edit_cache.dir
+C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/out/build/x64-debug/CMakeFiles/rebuild_cache.dir
