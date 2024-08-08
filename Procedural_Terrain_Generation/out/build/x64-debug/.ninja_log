@@ -1,8 +1,22 @@
 # ninja log v5
+8	696	7426845116840742	CMakeFiles/MyProject.dir/src/VAO.cpp.obj	230cbac52731b73
 4	769	7415631070265800	CMakeFiles/Procedural_Terrain_Generation.dir/Procedural_Terrain_Generation.cpp.obj	16e031396efa3a6f
+505	564	7438953751234413	glad.lib	f88bdac7333ed465
+3	133	7439068483170306	build.ninja	4bb7c460d9697be4
+5	1159	7438971190242130	CMakeFiles/MyProject.dir/src/Procedural_Terrain_Generation.cpp.obj	ea81e572119647b9
 770	1043	7415631072762387	Procedural_Terrain_Generation.exe	65069f1e265d892e
-4	727	7417447357607432	CMakeFiles/MyProject.dir/src/Procedural_Terrain_Generation.cpp.obj	3312fa5479509de7
-347	401	7417444591463520	glad.lib	f2e4d4eac7623853
+6	148	7426825277858731	CMakeFiles/glad.dir/src/Window.cpp.obj	2cd4ec9fa7f6e8d0
+4	780	7438969910161368	CMakeFiles/MyProject.dir/src/Map.cpp.obj	3eb8464c2aaa51c1
 2	346	7417444590964850	CMakeFiles/glad.dir/External/Libraries/include/glad/glad.c.obj	c426d68877fdd9aa
-8	649	7417447356829486	CMakeFiles/MyProject.dir/src/Map.cpp.obj	fe3448a9587b2269
-727	898	7417447358829466	MyProject.exe	c7b23c409e623d5
+1170	1354	7438971191628633	MyProject.exe	80b9f524e90089ee
+29	195	7426845111734386	CMakeFiles/MyProject.dir/src/Window.cpp.obj	8395711b0a07dc04
+18	665	7426825283094729	CMakeFiles/glad.dir/src/Shader.cpp.obj	ae036b870285ce97
+14	607	7426845115873324	CMakeFiles/MyProject.dir/src/Shader.cpp.obj	b91c59c7fad14a9d
+4	860	7438912552579370	CMakeFiles/MyProject.dir/src/Camera.cpp.obj	39ad5bceb73e58be
+9	1143	7426825287881941	CMakeFiles/glad.dir/src/Camera.cpp.obj	13913ee3411475aa
+4	643	7426845116292214	CMakeFiles/MyProject.dir/src/EBO.cpp.obj	290e8a9538c4ca5
+4	696	7426894449846144	CMakeFiles/MyProject.dir/src/VBO.cpp.obj	9de02f04c29c57f0
+8	284	7438873734685500	CMakeFiles/MyProject.dir/src/stb.cpp.obj	9702cb27ae494c9d
+4	504	7438953750675923	CMakeFiles/glad.dir/src/Texture.cpp.obj	f38aaf647df42f9c
+4	299	7438873734685500	CMakeFiles/glad.dir/src/stb.cpp.obj	5284752a76266f9
+8	509	7438953750705836	CMakeFiles/MyProject.dir/src/Texture.cpp.obj	4ab81bd7996eedb9

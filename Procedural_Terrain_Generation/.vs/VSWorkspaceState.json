@@ -18,8 +18,10 @@
     "\\External\\Libraries\\include",
     "\\External\\Libraries\\lib",
     "\\src",
-    "\\src\\headers"
+    "\\src\\headers",
+    "\\src\\Shaders",
+    "\\src\\Textures"
   ],
-  "SelectedNode": "\\src\\Procedural_Terrain_Generation.cpp",
+  "SelectedNode": "\\src\\Map.cpp",
   "PreviewInSolutionExplorer": false
 }
