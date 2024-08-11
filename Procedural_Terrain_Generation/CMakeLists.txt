@@ -25,7 +25,7 @@ include_directories(${INCLUDE_DIR}/stb)
 include_directories(${CMAKE_SOURCE_DIR}/src/headers)
 
 # Add GLAD source file
-add_library(glad ${INCLUDE_DIR}/glad/glad.c "src/stb.cpp" "src/headers/Texture.h" "src/Texture.cpp")
+add_library(glad ${INCLUDE_DIR}/glad/glad.c "src/stb.cpp" "src/headers/Texture.h" "src/Texture.cpp" "src/headers/Window.h" "src/headers/Sphere.h" "src/Sphere.cpp")
 
 # Source files
 set(SOURCES
@@ -41,7 +41,7 @@ set(SOURCES
 )
 
 # Add the executable
-add_executable(MyProject ${SOURCES} "src/stb.cpp" "src/headers/Texture.h" "src/Texture.cpp")
+add_executable(MyProject ${SOURCES} "src/stb.cpp" "src/headers/Texture.h" "src/Texture.cpp" "src/headers/Window.h" "src/headers/Sphere.h" "src/Sphere.cpp")
 
 # Link libraries
 target_link_libraries(MyProject glad ${GLFW_LIB_DIR}/glfw3.lib opengl32)
