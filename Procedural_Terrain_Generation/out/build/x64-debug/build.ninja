@@ -50,7 +50,7 @@ cmake_ninja_workdir = C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Gener
 build cmake_object_order_depends_target_glad: phony || CMakeFiles\glad.dir
 
 build CMakeFiles\glad.dir\External\Libraries\include\glad\glad.c.obj: C_COMPILER__glad_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\Libraries\include\glad\glad.c || cmake_object_order_depends_target_glad
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Ob0 /Od /RTC1
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
   INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
   OBJECT_DIR = CMakeFiles\glad.dir
   OBJECT_FILE_DIR = CMakeFiles\glad.dir\External\Libraries\include\glad
@@ -58,7 +58,7 @@ build CMakeFiles\glad.dir\External\Libraries\include\glad\glad.c.obj: C_COMPILER
   TARGET_PDB = glad.pdb
 
 build CMakeFiles\glad.dir\src\stb.cpp.obj: CXX_COMPILER__glad_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\stb.cpp || cmake_object_order_depends_target_glad
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
   INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
   OBJECT_DIR = CMakeFiles\glad.dir
   OBJECT_FILE_DIR = CMakeFiles\glad.dir\src
@@ -66,7 +66,7 @@ build CMakeFiles\glad.dir\src\stb.cpp.obj: CXX_COMPILER__glad_unscanned_Debug C$
   TARGET_PDB = glad.pdb
 
 build CMakeFiles\glad.dir\src\Texture.cpp.obj: CXX_COMPILER__glad_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\Texture.cpp || cmake_object_order_depends_target_glad
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
   INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
   OBJECT_DIR = CMakeFiles\glad.dir
   OBJECT_FILE_DIR = CMakeFiles\glad.dir\src
@@ -82,7 +82,7 @@ build CMakeFiles\glad.dir\src\Texture.cpp.obj: CXX_COMPILER__glad_unscanned_Debu
 # Link the static library glad.lib
 
 build glad.lib: CXX_STATIC_LIBRARY_LINKER__glad_Debug CMakeFiles\glad.dir\External\Libraries\include\glad\glad.c.obj CMakeFiles\glad.dir\src\stb.cpp.obj CMakeFiles\glad.dir\src\Texture.cpp.obj
-  LANGUAGE_COMPILE_FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g
+  LANGUAGE_COMPILE_FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
   LINK_FLAGS = /machine:x64
   OBJECT_DIR = CMakeFiles\glad.dir
   POST_BUILD = cd .
@@ -101,7 +101,7 @@ build glad.lib: CXX_STATIC_LIBRARY_LINKER__glad_Debug CMakeFiles\glad.dir\Extern
 build cmake_object_order_depends_target_MyProject: phony || cmake_object_order_depends_target_glad
 
 build CMakeFiles\MyProject.dir\src\EBO.cpp.obj: CXX_COMPILER__MyProject_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\EBO.cpp || cmake_object_order_depends_target_MyProject
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
   INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
   OBJECT_DIR = CMakeFiles\MyProject.dir
   OBJECT_FILE_DIR = CMakeFiles\MyProject.dir\src
@@ -109,7 +109,7 @@ build CMakeFiles\MyProject.dir\src\EBO.cpp.obj: CXX_COMPILER__MyProject_unscanne
   TARGET_PDB = MyProject.pdb
 
 build CMakeFiles\MyProject.dir\src\VAO.cpp.obj: CXX_COMPILER__MyProject_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\VAO.cpp || cmake_object_order_depends_target_MyProject
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
   INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
   OBJECT_DIR = CMakeFiles\MyProject.dir
   OBJECT_FILE_DIR = CMakeFiles\MyProject.dir\src
@@ -117,7 +117,7 @@ build CMakeFiles\MyProject.dir\src\VAO.cpp.obj: CXX_COMPILER__MyProject_unscanne
   TARGET_PDB = MyProject.pdb
 
 build CMakeFiles\MyProject.dir\src\VBO.cpp.obj: CXX_COMPILER__MyProject_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\VBO.cpp || cmake_object_order_depends_target_MyProject
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
   INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
   OBJECT_DIR = CMakeFiles\MyProject.dir
   OBJECT_FILE_DIR = CMakeFiles\MyProject.dir\src
@@ -125,7 +125,7 @@ build CMakeFiles\MyProject.dir\src\VBO.cpp.obj: CXX_COMPILER__MyProject_unscanne
   TARGET_PDB = MyProject.pdb
 
 build CMakeFiles\MyProject.dir\src\Shader.cpp.obj: CXX_COMPILER__MyProject_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\Shader.cpp || cmake_object_order_depends_target_MyProject
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
   INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
   OBJECT_DIR = CMakeFiles\MyProject.dir
   OBJECT_FILE_DIR = CMakeFiles\MyProject.dir\src
@@ -133,7 +133,7 @@ build CMakeFiles\MyProject.dir\src\Shader.cpp.obj: CXX_COMPILER__MyProject_unsca
   TARGET_PDB = MyProject.pdb
 
 build CMakeFiles\MyProject.dir\src\Camera.cpp.obj: CXX_COMPILER__MyProject_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\Camera.cpp || cmake_object_order_depends_target_MyProject
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
   INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
   OBJECT_DIR = CMakeFiles\MyProject.dir
   OBJECT_FILE_DIR = CMakeFiles\MyProject.dir\src
@@ -141,7 +141,7 @@ build CMakeFiles\MyProject.dir\src\Camera.cpp.obj: CXX_COMPILER__MyProject_unsca
   TARGET_PDB = MyProject.pdb
 
 build CMakeFiles\MyProject.dir\src\Map.cpp.obj: CXX_COMPILER__MyProject_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\Map.cpp || cmake_object_order_depends_target_MyProject
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
   INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
   OBJECT_DIR = CMakeFiles\MyProject.dir
   OBJECT_FILE_DIR = CMakeFiles\MyProject.dir\src
@@ -149,7 +149,7 @@ build CMakeFiles\MyProject.dir\src\Map.cpp.obj: CXX_COMPILER__MyProject_unscanne
   TARGET_PDB = MyProject.pdb
 
 build CMakeFiles\MyProject.dir\src\Procedural_Terrain_Generation.cpp.obj: CXX_COMPILER__MyProject_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\Procedural_Terrain_Generation.cpp || cmake_object_order_depends_target_MyProject
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
   INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
   OBJECT_DIR = CMakeFiles\MyProject.dir
   OBJECT_FILE_DIR = CMakeFiles\MyProject.dir\src
@@ -157,7 +157,15 @@ build CMakeFiles\MyProject.dir\src\Procedural_Terrain_Generation.cpp.obj: CXX_CO
   TARGET_PDB = MyProject.pdb
 
 build CMakeFiles\MyProject.dir\src\Window.cpp.obj: CXX_COMPILER__MyProject_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\Window.cpp || cmake_object_order_depends_target_MyProject
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
+  INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
+  OBJECT_DIR = CMakeFiles\MyProject.dir
+  OBJECT_FILE_DIR = CMakeFiles\MyProject.dir\src
+  TARGET_COMPILE_PDB = CMakeFiles\MyProject.dir\
+  TARGET_PDB = MyProject.pdb
+
+build CMakeFiles\MyProject.dir\src\MapBuilder.cpp.obj: CXX_COMPILER__MyProject_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\MapBuilder.cpp || cmake_object_order_depends_target_MyProject
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
   INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
   OBJECT_DIR = CMakeFiles\MyProject.dir
   OBJECT_FILE_DIR = CMakeFiles\MyProject.dir\src
@@ -165,7 +173,7 @@ build CMakeFiles\MyProject.dir\src\Window.cpp.obj: CXX_COMPILER__MyProject_unsca
   TARGET_PDB = MyProject.pdb
 
 build CMakeFiles\MyProject.dir\src\stb.cpp.obj: CXX_COMPILER__MyProject_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\stb.cpp || cmake_object_order_depends_target_MyProject
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
   INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
   OBJECT_DIR = CMakeFiles\MyProject.dir
   OBJECT_FILE_DIR = CMakeFiles\MyProject.dir\src
@@ -173,7 +181,7 @@ build CMakeFiles\MyProject.dir\src\stb.cpp.obj: CXX_COMPILER__MyProject_unscanne
   TARGET_PDB = MyProject.pdb
 
 build CMakeFiles\MyProject.dir\src\Texture.cpp.obj: CXX_COMPILER__MyProject_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\Texture.cpp || cmake_object_order_depends_target_MyProject
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
   INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
   OBJECT_DIR = CMakeFiles\MyProject.dir
   OBJECT_FILE_DIR = CMakeFiles\MyProject.dir\src
@@ -188,8 +196,8 @@ build CMakeFiles\MyProject.dir\src\Texture.cpp.obj: CXX_COMPILER__MyProject_unsc
 #############################################
 # Link the executable MyProject.exe
 
-build MyProject.exe: CXX_EXECUTABLE_LINKER__MyProject_Debug CMakeFiles\MyProject.dir\src\EBO.cpp.obj CMakeFiles\MyProject.dir\src\VAO.cpp.obj CMakeFiles\MyProject.dir\src\VBO.cpp.obj CMakeFiles\MyProject.dir\src\Shader.cpp.obj CMakeFiles\MyProject.dir\src\Camera.cpp.obj CMakeFiles\MyProject.dir\src\Map.cpp.obj CMakeFiles\MyProject.dir\src\Procedural_Terrain_Generation.cpp.obj CMakeFiles\MyProject.dir\src\Window.cpp.obj CMakeFiles\MyProject.dir\src\stb.cpp.obj CMakeFiles\MyProject.dir\src\Texture.cpp.obj | glad.lib C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\lib\glfw3.lib || glad.lib
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -DDEBUG -Wall -g
+build MyProject.exe: CXX_EXECUTABLE_LINKER__MyProject_Debug CMakeFiles\MyProject.dir\src\EBO.cpp.obj CMakeFiles\MyProject.dir\src\VAO.cpp.obj CMakeFiles\MyProject.dir\src\VBO.cpp.obj CMakeFiles\MyProject.dir\src\Shader.cpp.obj CMakeFiles\MyProject.dir\src\Camera.cpp.obj CMakeFiles\MyProject.dir\src\Map.cpp.obj CMakeFiles\MyProject.dir\src\Procedural_Terrain_Generation.cpp.obj CMakeFiles\MyProject.dir\src\Window.cpp.obj CMakeFiles\MyProject.dir\src\MapBuilder.cpp.obj CMakeFiles\MyProject.dir\src\stb.cpp.obj CMakeFiles\MyProject.dir\src\Texture.cpp.obj | glad.lib C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\lib\glfw3.lib || glad.lib
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = glad.lib  C:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\lib\glfw3.lib  opengl32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
   OBJECT_DIR = CMakeFiles\MyProject.dir

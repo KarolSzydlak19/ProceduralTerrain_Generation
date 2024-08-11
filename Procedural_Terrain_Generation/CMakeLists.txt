@@ -1,6 +1,11 @@
 ﻿cmake_minimum_required(VERSION 3.10)
 project(MyProject)
 
+if(NOT MSVC)
+    add_compile_options(-g)
+endif()
+
+
 # Specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -9,10 +14,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(EXTERNAL_DIR ${CMAKE_SOURCE_DIR}/External/libraries)
 set(GLFW_LIB_DIR ${EXTERNAL_DIR}/lib)
 set(INCLUDE_DIR ${EXTERNAL_DIR}/include)
-
-# Debug configuration
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -Wall -g")
-set(CMAKE_BUILD_TYPE Debug)
 
 # Include directories
 include_directories(${INCLUDE_DIR})
@@ -36,6 +37,7 @@ set(SOURCES
     src/Map.cpp
     src/Procedural_Terrain_Generation.cpp
     src/Window.cpp
+    src/MapBuilder.cpp
 )
 
 # Add the executable
@@ -48,3 +50,7 @@ target_link_libraries(MyProject glad ${GLFW_LIB_DIR}/glfw3.lib opengl32)
 set_target_properties(MyProject PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/src"
 )
+#pragma warning(disable : 4464)
+if(NOT MSVC)
+    add_compile_options(-g)
+endif()

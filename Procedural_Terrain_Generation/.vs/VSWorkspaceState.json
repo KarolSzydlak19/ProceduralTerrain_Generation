@@ -13,15 +13,12 @@
   },
   "ExpandedNodes": [
     "",
-    "\\External",
-    "\\External\\Libraries",
-    "\\External\\Libraries\\include",
-    "\\External\\Libraries\\lib",
+    "\\out",
+    "\\out\\build",
     "\\src",
     "\\src\\headers",
     "\\src\\Shaders",
     "\\src\\Textures"
   ],
-  "SelectedNode": "\\src\\Map.cpp",
   "PreviewInSolutionExplorer": false
 }

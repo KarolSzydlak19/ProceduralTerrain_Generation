@@ -13,6 +13,7 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 int main() {
+    srand(time(NULL));
     GLFWwindow* window;
     /* Initialize the library */
     if (!glfwInit()) {
@@ -39,12 +40,14 @@ int main() {
 	std::vector<std::vector<::glm::vec3>> map;
     std::cout << "Vector" << std::endl;
 	int mapSize = 4097;
+    //int mapSize = 25;
 	map.resize(mapSize);
 	for (int i = 0; i < mapSize; i++) {
 		map[i].resize(mapSize, {0.0f, 0.0f, 0.0f});
 	}
     std::cout << "Vector created" << std::endl;
-	Map terrain(mapSize, 50.0f, map);
+    MapBuilder mapBuilder(map);
+	Map terrain(mapSize, 50.0f, map, mapBuilder);
 	//terrain.print();
     std::cout << "Main Terrain gen starting" << std::endl;
 	terrain.generate();

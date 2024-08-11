@@ -12,7 +12,8 @@
 #include <VAO.h>
 #include <Shader.h>
 #include "Texture.h"
-
+#include "MapBuilder.h"
+class MapBuilder;
 class Map {
 public:
 	std::vector<std::vector<glm::vec3>>& map;
@@ -23,7 +24,8 @@ public:
 	EBO* mapEBO;
 	VAO* mapVAO;
 	VBO* mapVBO;
-	
+	MapBuilder& mapBuilder;
+
 	void Diamond_step(int x, int y, int stepSize, float scale);
 	void Square_step(int x, int y, int stepSize, float scale);
 	float randomOffset(float range);	//get random value decreasing with reach iteration
@@ -35,5 +37,5 @@ public:
 	void draw();
 	void initAxes();
 	void initObjects();
-	Map(int size, float roughness, std::vector<std::vector<glm::vec3>>& map);
+	Map(int size, float roughness, std::vector<std::vector<glm::vec3>>& map, MapBuilder& mapBuilder);
 };
