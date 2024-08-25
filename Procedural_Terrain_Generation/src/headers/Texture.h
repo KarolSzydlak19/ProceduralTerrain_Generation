@@ -10,6 +10,7 @@ public:
 	GLuint ID;
 	GLenum type;
 	Texture(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType);
+	Texture(unsigned char* data, int width, int height, GLenum format, GLenum texType, GLenum slot, GLenum pixelType);
 
 	void texUnit(Shader& shader, const char* uniform, GLuint uint);
 	void Bind();

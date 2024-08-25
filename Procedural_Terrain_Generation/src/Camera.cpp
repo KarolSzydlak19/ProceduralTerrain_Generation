@@ -17,6 +17,9 @@ void Camera::Matrix(float FOVdeg, float nearPlane, float farPlane, Shader& shade
 	view = glm::lookAt(position, position + orientation, up);
 	projection = glm::perspective(glm::radians(FOVdeg), (float)(windowWidth / windowHeight), nearPlane, farPlane);
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view));
+	if (glGetError() != GL_NO_ERROR) {
+		std::cerr << "OpenGL Error after setting camMatrix uniform" << std::endl;
+	}
 }
 
 void Camera::InputHandler(GLFWwindow* window)

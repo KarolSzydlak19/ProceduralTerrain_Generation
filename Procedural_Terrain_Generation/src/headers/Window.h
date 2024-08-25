@@ -9,6 +9,7 @@
 #include <functional>
 #include <vector>
 #include "Map.h"
+#include "Sphere.h"
 #include <Camera.h>
 #include <filesystem>
 #ifndef WINDOW_H

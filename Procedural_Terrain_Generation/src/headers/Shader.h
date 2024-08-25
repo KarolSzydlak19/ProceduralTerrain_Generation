@@ -22,7 +22,7 @@ public:
 	// Constructor that build the Shader Program from 2 different shaders
 	Shader(const char* vertexFile, const char* fragmentFile);
 	bool fileExists(const std::string& filename);
-
+	void setMat4(const std::string& name, const glm::mat4& mat) const;
 	// Activates the Shader Program
 	void Activate();
 	// Deletes the Shader Program

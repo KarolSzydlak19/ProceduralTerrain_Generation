@@ -15,16 +15,17 @@
 #include "MapBuilder.h"
 class MapBuilder;
 class Map {
-public:
+private:
+	EBO* mapEBO;
+	VAO* mapVAO;
+	VBO* mapVBO;
 	std::vector<std::vector<glm::vec3>>& map;
 	float roughness;
 	int size;
 	GLfloat* vertices;
 	GLuint* indices;
-	EBO* mapEBO;
-	VAO* mapVAO;
-	VBO* mapVBO;
 	MapBuilder& mapBuilder;
+public:
 
 	void Diamond_step(int x, int y, int stepSize, float scale);
 	void Square_step(int x, int y, int stepSize, float scale);

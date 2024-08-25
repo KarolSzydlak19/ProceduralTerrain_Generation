@@ -1,4 +1,5 @@
 #include"Shader.h"
+#include <vector>
 
 // Reads a text file and outputs a string with everything in the text file
 std::string get_file_contents(const char* filename)
@@ -78,6 +79,7 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile)
 	// Delete the now useless Vertex and Fragment Shader objects
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+	std::cout << vertexFile << " " << fragmentFile << " " << ID << std::endl;
 
 }
 
@@ -85,6 +87,10 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile)
 void Shader::Activate()
 {
 	glUseProgram(ID);
+	GLenum error = glGetError();
+	if (glGetError() != GL_NO_ERROR) {
+		std::cerr << "Error activating shader ID " << ID << ": " << error << std::endl;
+	}
 }
 
 // Deletes the Shader Program
@@ -118,4 +124,14 @@ void Shader::compileErrors(unsigned int shader, const char* type)
 			std::cout << "SHADER_LINKING_ERROR for:" << type << "\n" << infoLog << std::endl;
 		}
 	}
+}
+
+
+void Shader::setMat4(const std::string& name, const glm::mat4& mat) const
+{
+	GLint location = glGetUniformLocation(ID, name.c_str());
+	if (location == -1) {
+		std::cerr << "Warning: Uniform '" << name << "' not found in shader!" << std::endl;
+	}
+	glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }

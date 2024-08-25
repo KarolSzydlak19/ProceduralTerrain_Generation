@@ -15,7 +15,8 @@ public:
     ~Sphere();
 
     void Draw(Shader& shader, glm::vec3 position, glm::vec3 scale, glm::vec3 color);
-
+    void translate(glm::vec3 pos);
+    glm::mat4 model;
 private:
     void generateVertices(float radius, unsigned int rings, unsigned int sectors);
     void setupMesh();
