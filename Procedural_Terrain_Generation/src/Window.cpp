@@ -3,7 +3,7 @@
 
 int Window::display(void)
 {
-    float roughness = 1200.0f;
+    float roughness = 200.0f;
     GLFWwindow* window;
     /* Initialize the library */
     if (!glfwInit()) {
@@ -26,7 +26,7 @@ int Window::display(void)
         return -1;
     }
     std::vector<std::vector<::glm::vec3>> map;
-    int mapSize = 4097;
+    int mapSize = 1025;
     //int mapSize = 25;
     map.resize(mapSize);
     for (int i = 0; i < mapSize; i++) {
@@ -72,13 +72,14 @@ int Window::display(void)
         shader.Activate();
         camera.InputHandler(window);
         // Updates and exports the camera matrix to the Vertex Shader
-        camera.Matrix(120.0f, 0.1f, 10000.0f, shader, "camMatrix");
+        camera.Matrix(shader, "camMatrix");
+        camera.updateMatrix(120.0f, 0.1f, 10000.0f);
         mapTexture.Bind();
         terrain.draw();
         mapTexture.Unbind();       
         sunShader.Activate();
         // Now draw the sphere
-        camera.Matrix(120.0f, 0.1f, 10000.0f, sunShader, "sunCamMatrix");
+        camera.Matrix(sunShader, "sunCamMatrix");
         if (glGetError() != GL_NO_ERROR) {
             std::cerr << "OpenGL Error after cam matrix" << std::endl;
         }
