@@ -74,10 +74,48 @@ void checkOpenGLError(const std::string& stmt) {
     }
 }
 
+void Map::generateTangents() {
+    tangents.resize(size * size, glm::vec3(0.0f));
+    // Tangent calculation logic based on vertex positions and texture coordinates
+    for (int i = 0; i < size - 1; ++i) {
+        for (int j = 0; j < size - 1; ++j) {
+            // Vertex positions
+            glm::vec3 v0 = map[i][j];
+            glm::vec3 v1 = map[i + 1][j];
+            glm::vec3 v2 = map[i][j + 1];
+
+            // Texture coordinates (assuming they're part of your vertices)
+            glm::vec2 uv0(vertices[(i * size + j) * 5 + 3], vertices[(i * size + j) * 5 + 4]);
+            glm::vec2 uv1(vertices[((i + 1) * size + j) * 5 + 3], vertices[((i + 1) * size + j) * 5 + 4]);
+            glm::vec2 uv2(vertices[(i * size + j + 1) * 5 + 3], vertices[(i * size + j + 1) * 5 + 4]);
+
+            // Edge vectors
+            glm::vec3 deltaPos1 = v1 - v0;
+            glm::vec3 deltaPos2 = v2 - v0;
+            glm::vec2 deltaUV1 = uv1 - uv0;
+            glm::vec2 deltaUV2 = uv2 - uv0;
+
+            float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+            glm::vec3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+
+            // Store tangent for each vertex of the triangle
+            tangents[i * size + j] += tangent;
+            tangents[(i + 1) * size + j] += tangent;
+            tangents[i * size + j + 1] += tangent;
+        }
+    }
+
+    // Normalize all tangents
+    for (auto& tangent : tangents) {
+        tangent = glm::normalize(tangent);
+    }
+}
+
 void Map::initObjects() {
     initAxes();
     generateVertices();
     generateIndices();
+    generateTangents();
     mapVAO->Bind();
 
     mapVBO = new VBO(vertices, size * size * 5 * sizeof(GLfloat));
@@ -87,6 +125,13 @@ void Map::initObjects() {
     mapVAO->LinkAttrib(*mapVBO, 0, 3, GL_FLOAT, 5 * sizeof(GLfloat), (void*)0);
 
     mapVAO->LinkAttrib(*mapVBO, 1, 2, GL_FLOAT, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+
+    GLuint tangentVBO;
+    glGenBuffers(1, &tangentVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, tangentVBO);
+    glBufferData(GL_ARRAY_BUFFER, tangents.size() * sizeof(glm::vec3), &tangents[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glEnableVertexAttribArray(2);
 
     mapVAO->Unbind();
     mapEBO->Unbind();

@@ -64,7 +64,7 @@ void MapBuilder::initAxes(int size) {
     float x = 0.0f;
     for (int i = 0; i < size; i++) {
         //x += 0.05;
-        x += 1.0f;
+        x += 2.0f;
         float z = 0;
         for (int j = 0; j < size; j++) {
             map[i][j].x = x;
@@ -73,7 +73,7 @@ void MapBuilder::initAxes(int size) {
     float y = 0.0f;
     for (int i = 0; i < size; i++) {
         //y += 0.05;
-        y += 1.0f;
+        y += 2.0f;
         for (int j = 0; j < size; j++) {
             map[j][i].z = y;
         }

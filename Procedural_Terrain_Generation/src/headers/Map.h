@@ -25,6 +25,7 @@ private:
 	GLfloat* vertices;
 	GLuint* indices;
 	MapBuilder& mapBuilder;
+	std::vector<glm::vec3> tangents;
 public:
 
 	void Diamond_step(int x, int y, int stepSize, float scale);
@@ -38,5 +39,6 @@ public:
 	void draw();
 	void initAxes();
 	void initObjects();
+	void generateTangents();
 	Map(int size, float roughness, std::vector<std::vector<glm::vec3>>& map, MapBuilder& mapBuilder);
 };
