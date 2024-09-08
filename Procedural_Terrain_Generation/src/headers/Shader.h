@@ -23,6 +23,7 @@ public:
 	Shader(const char* vertexFile, const char* fragmentFile);
 	bool fileExists(const std::string& filename);
 	void setMat4(const std::string& name, const glm::mat4& mat) const;
+	void setVec3(const std::string& name, const glm::vec3& value) const;
 	// Activates the Shader Program
 	void Activate();
 	// Deletes the Shader Program

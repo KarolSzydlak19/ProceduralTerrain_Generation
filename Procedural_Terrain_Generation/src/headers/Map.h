@@ -26,6 +26,9 @@ private:
 	GLuint* indices;
 	MapBuilder& mapBuilder;
 	std::vector<glm::vec3> tangents;
+	std::vector<glm::vec3> normals;
+	std::vector<glm::vec3> normalLines;
+	GLuint normalVAO, normalVBO;
 public:
 
 	void Diamond_step(int x, int y, int stepSize, float scale);
@@ -36,9 +39,14 @@ public:
 	void displayMap();
 	void generateIndices();
 	void generateVertices();
+	void printNormals();
 	void draw();
 	void initAxes();
 	void initObjects();
 	void generateTangents();
+	void generateNormals();
+	void generateNormalLines();
+	void initNormalObjects();
+	void drawNormals();
 	Map(int size, float roughness, std::vector<std::vector<glm::vec3>>& map, MapBuilder& mapBuilder);
 };

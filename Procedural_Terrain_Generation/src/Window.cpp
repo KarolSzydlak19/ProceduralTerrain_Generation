@@ -3,7 +3,7 @@
 
 int Window::display(void)
 {
-    float roughness = 800.0f;
+    float roughness = 18000.0f;
     GLFWwindow* window;
     /* Initialize the library */
     if (!glfwInit()) {
@@ -26,7 +26,7 @@ int Window::display(void)
         return -1;
     }
     std::vector<std::vector<::glm::vec3>> map;
-    int mapSize = 2049;
+    int mapSize = 1025;
     //int mapSize = 25;
     map.resize(mapSize);
     for (int i = 0; i < mapSize; i++) {
@@ -38,8 +38,8 @@ int Window::display(void)
     Map terrain(mapSize, roughness, map, mapBuilder);
     std::cout << "Main Terrain gen starting" << std::endl;
     terrain.generate();
-    Sphere sunSphere(50.0f, 100, 100); // SUN
-    glm::vec3 sunPosition = glm::vec3(20.0, 4000.0f, 0.0f); // Position high above the terrain
+    Sphere sunSphere(500.0f, 100, 100); // SUN
+    glm::vec3 sunPosition = glm::vec3(15000.0, 80000.0f, 15000.0f); // Position high above the terrain
     glm::vec3 sunScale = glm::vec3(20.0f); // Scale it to make it visible
     //sunSphere.translate(sunPosition);
 
@@ -52,7 +52,7 @@ int Window::display(void)
     Texture snowTex("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\snow.tga", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
     Texture grassTex("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\grass.tga", GL_TEXTURE_2D, GL_TEXTURE1, GL_RGB, GL_UNSIGNED_BYTE);
     Texture soilTex("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\soil.tga", GL_TEXTURE_2D, GL_TEXTURE2, GL_RGB, GL_UNSIGNED_BYTE);
-    Texture stoneTex("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\stone2.tga", GL_TEXTURE_2D, GL_TEXTURE3, GL_RGB, GL_UNSIGNED_BYTE);
+    Texture stoneTex("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\stone.tga", GL_TEXTURE_2D, GL_TEXTURE3, GL_RGB, GL_UNSIGNED_BYTE);
     //mapTexture.texUnit(shader, "mapSurfaceTexture", 0);
     std::cout << "tex loaded" << std::endl;
     snowTex.texUnit(shader, "snowTexture", 0);
@@ -84,6 +84,8 @@ int Window::display(void)
     std::cout << "Soil texture ID: " << soilTex.ID << std::endl;
     std::cout << "Stone texture ID: " << stoneTex.ID << std::endl;
 
+
+    glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 0.80f);
     //glFrontFace(GL_CCW);
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
@@ -92,7 +94,12 @@ int Window::display(void)
         camera.InputHandler(window);
         // Updates and exports the camera matrix to the Vertex Shader
         camera.Matrix(shader, "camMatrix");
-        camera.updateMatrix(120.0f, 0.1f, 10000.0f);
+        camera.updateMatrix(120.0f, 0.1f, 1000000.0f);
+        //lighting 
+        shader.Activate();  // Activate your terrain shader
+        shader.setVec3("sunPosition", sunPosition);
+        shader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 0.8f));  // Warm white light
+        shader.setVec3("viewPos", camera.position);
         //mapTexture.Bind();
         glActiveTexture(GL_TEXTURE0);
         snowTex.Bind();
@@ -126,10 +133,13 @@ int Window::display(void)
         if (modelLoc == -1) {
             std::cerr << "Uniform 'model' not found or not used in the shader!" << std::endl;
         }
+
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        glActiveTexture(GL_TEXTURE4);
         sunTex.Bind();
         sunSphere.Draw(sunShader, sunPosition, sunScale, glm::vec3(1.0f, 1.0f, 0.0f)); // Drawing the sphere as the sun
         sunTex.Unbind();
+        //terrain.drawNormals();
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 

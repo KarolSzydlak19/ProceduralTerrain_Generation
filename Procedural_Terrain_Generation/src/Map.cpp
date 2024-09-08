@@ -111,11 +111,121 @@ void Map::generateTangents() {
     }
 }
 
+void Map::generateNormals() {
+    // Initialize normals with zeros
+    normals.resize(size * size, glm::vec3(0.0f, 0.0f, 0.0f));
+
+    // Loop through the entire grid, calculating face normals
+    for (int i = 0; i < size - 1; ++i) {
+        for (int j = 0; j < size - 1; ++j) {
+            // Get vertices of the current quad (2 triangles per quad)
+            glm::vec3 v0 = map[i][j];            // Bottom-left
+            glm::vec3 v1 = map[i + 1][j];        // Bottom-right
+            glm::vec3 v2 = map[i][j + 1];        // Top-left
+            glm::vec3 v3 = map[i + 1][j + 1];    // Top-right
+
+            // Triangle 1 (v0, v1, v2)
+            glm::vec3 U1 = v1 - v0;
+            glm::vec3 V1 = v2 - v0;
+            glm::vec3 normal1 = glm::normalize(glm::cross(U1, V1));
+
+            // Triangle 2 (v1, v3, v2)
+            glm::vec3 U2 = v3 - v1;
+            glm::vec3 V2 = v2 - v1;
+            glm::vec3 normal2 = glm::normalize(glm::cross(U2, V2));
+
+            // Add the normals to the corresponding vertices
+            normals[i * size + j] += normal1;           // v0
+            normals[(i + 1) * size + j] += normal1;     // v1
+            normals[i * size + (j + 1)] += normal1;     // v2
+
+            normals[(i + 1) * size + j] += normal2;     // v1
+            normals[(i + 1) * size + (j + 1)] += normal2; // v3
+            normals[i * size + (j + 1)] += normal2;     // v2
+        }
+    }
+
+    // Normalize all vertex normals (after accumulating)
+    for (auto& normal : normals) {
+        normal = glm::normalize(normal);
+    }
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            //normals[i * size + j].x += map[i][j].x;
+            //normals[i * size + j].y += map[i][j].y;
+            //normals[i * size + j].z += map[i][j].z;
+        }
+    }
+    //printNormals();
+}
+void Map::generateNormalLines() {
+    float normalScale = 10.0f;  // Scale factor for normal line length
+    normalLines.clear();
+
+    for (int i = 0; i < size * size; ++i) {
+        glm::vec3 vertex = glm::vec3(vertices[i * 5], vertices[i * 5 + 1], vertices[i * 5 + 2]);
+        glm::vec3 normalEnd = vertex + normals[i] * normalScale;  // End point of the normal line
+
+        // Store the start and end points of the normal as two vertices
+        normalLines.push_back(vertex);
+        normalLines.push_back(normalEnd);
+    }
+}
+
+void Map::printNormals() {
+    std::cout << "Printing vertices and normals:" << std::endl;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            // Get the vertex position
+            glm::vec3 vertex = map[i][j];
+
+            // Get the normal corresponding to this vertex
+            glm::vec3 normal = normals[i * size + j];
+
+            // Print the vertex position and normal vector
+            std::cout << "Vertex at (" << i << ", " << j << "): "
+                << vertex.x << ", " << vertex.y << ", " << vertex.z << std::endl;
+            std::cout << "Normal: "
+                << normal.x << ", " << normal.y << ", " << normal.z << std::endl;
+        }
+    }
+}
+
+
+void Map::initNormalObjects() {
+    generateNormalLines();  // Make sure to generate the normal lines first
+
+    // Generate VAO/VBO for normal lines
+    glGenVertexArrays(1, &normalVAO);
+    glGenBuffers(1, &normalVBO);
+
+    glBindVertexArray(normalVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
+    glBufferData(GL_ARRAY_BUFFER, normalLines.size() * sizeof(glm::vec3), &normalLines[0], GL_STATIC_DRAW);
+
+    // Vertex positions (3 floats per vertex)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+}
+
+void Map::drawNormals() {
+    glBindVertexArray(normalVAO);
+    glDrawArrays(GL_LINES, 0, normalLines.size());
+    glBindVertexArray(0);
+}
+
+
 void Map::initObjects() {
     initAxes();
     generateVertices();
     generateIndices();
     generateTangents();
+    generateNormals();
+
+    generateNormalLines();
+    initNormalObjects();
     mapVAO->Bind();
 
     mapVBO = new VBO(vertices, size * size * 5 * sizeof(GLfloat));
@@ -132,6 +242,13 @@ void Map::initObjects() {
     glBufferData(GL_ARRAY_BUFFER, tangents.size() * sizeof(glm::vec3), &tangents[0], GL_STATIC_DRAW);
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glEnableVertexAttribArray(2);
+
+    GLuint normalVBO;
+    glGenBuffers(1, &normalVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
+    glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glEnableVertexAttribArray(3); // Normal attribute
 
     mapVAO->Unbind();
     mapEBO->Unbind();
