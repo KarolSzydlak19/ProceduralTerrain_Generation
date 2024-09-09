@@ -86,6 +86,8 @@ int Window::display(void)
 
 
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 0.80f);
+    glm::vec3 sunDirection = glm::normalize(glm::vec3(-0.3f, -1.0f, -0.5f));  // Direction vector for sunlight
+
     //glFrontFace(GL_CCW);
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
@@ -97,7 +99,7 @@ int Window::display(void)
         camera.updateMatrix(120.0f, 0.1f, 1000000.0f);
         //lighting 
         shader.Activate();  // Activate your terrain shader
-        shader.setVec3("sunPosition", sunPosition);
+        shader.setVec3("sunDirection", sunDirection);
         shader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 0.8f));  // Warm white light
         shader.setVec3("viewPos", camera.position);
         //mapTexture.Bind();

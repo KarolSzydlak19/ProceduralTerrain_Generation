@@ -14,7 +14,7 @@ uniform sampler2D soilTexture;   // Soil texture
 uniform sampler2D stoneTexture;  // Stone texture
 uniform sampler2D normalMap;     // Normal map texture
 
-uniform vec3 sunPosition;        // Position of the sun in world space
+uniform vec3 sunDirection;        // Position of the sun in world space
 uniform vec3 lightColor;         // Color of the light
 uniform vec3 viewPos;            // Position of the camera/viewer
 
@@ -54,7 +54,8 @@ void main()
 
     // Lighting calculations
     vec3 finalLightColor = lightColor * lightIntensity;
-    vec3 lightDir = normalize(sunPosition - fragPos);  // Calculate light direction
+    //vec3 lightDir = normalize(sunDirection - fragPos);  // Calculate light direction
+    vec3 lightDir = normalize(-sunDirection);
     vec3 ambient = defaultAmbient * finalLightColor;  // Ambient lighting
     float diff = max(dot(worldNormal, lightDir), 0.0f);
     vec3 diffuse = diff * finalLightColor;  // Diffuse lighting
