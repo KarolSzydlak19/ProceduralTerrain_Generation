@@ -6,19 +6,28 @@ layout(location = 2) in vec3 aTangent;  // Tangent vector
 layout(location = 3) in vec3 aNormal;   // Normal vector
 
 uniform mat4 camMatrix;  // Camera transformation matrix
+uniform mat4 lightProjection;
+uniform mat4 model;
+uniform mat4 translation;
+uniform mat4 rotation;
+uniform mat4 scale;
 
+out vec3 currPos;
 out vec2 texCoord;   // Pass texture coordinates to fragment shader
 out vec3 tangent;    // Pass tangent to fragment shader
 out vec3 normal;     // Pass normal to fragment shader
 out float height;    // Pass height information to fragment shader
 out vec3 fragPos;
+out vec4 fragPosLight;
 
 void main()
 {
+    currPos = vec3(model * translation * rotation * scale * vec4(aPos, 1.0f));
     gl_Position = camMatrix * vec4(aPos, 1.0);  // Apply camera matrix transformation
     texCoord = aTex;  // Pass texture coordinates to fragment shader
     tangent = aTangent;  // Pass tangent to fragment shader
     normal = aNormal;  // Pass normal to fragment shader
     height = aPos.y;  // Store the height of the vertex (y-coordinate)
     fragPos = aPos;
+    fragPosLight = lightProjection * vec4(currPos, 1.0f);
 }

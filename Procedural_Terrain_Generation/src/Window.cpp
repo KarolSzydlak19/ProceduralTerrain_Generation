@@ -74,6 +74,7 @@ int Window::display(void)
     //terrain.print();
     glEnable(GL_DEPTH_TEST); // Enable depth testing
     glClearColor(0.0f, 0.45f, 0.63f, 1.0f);
+    //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK); // Cull back faces
     glEnable(GL_BLEND);
@@ -87,11 +88,30 @@ int Window::display(void)
 
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 0.80f);
     glm::vec3 sunDirection = glm::normalize(glm::vec3(-0.3f, -1.0f, -0.5f));  // Direction vector for sunlight
-
+    // SHADOWS
+    ShadowMap shadowMap(2048, 2048);
+    glm::mat4 orthagonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
+    glm::mat4 lightView = glm::lookAt(20.0f * sunDirection, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 lightProjection = orthagonalProjection * lightView;
+    Shader shadowShader("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Shaders\\shadowMap.vert", "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src/Shaders\\shadowMap.frag");
+    shadowShader.Activate();
+    glUniformMatrix4fv(glGetUniformLocation(shadowShader.ID, "lighProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
+    Shader shadowDis("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Shaders\\shadowMap.vert", "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src/Shaders\\shadowMap.frag");
     //glFrontFace(GL_CCW);
+    glm::mat4 matrix = glm::mat4(1.0f);
+    glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+    glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color and depth buffers
+        // DRAW SHADOWMAP HERE????
+        shadowShader.Activate();
+        shadowMap.BindForWriting();
+        glUniformMatrix4fv(glGetUniformLocation(shadowShader.ID, "lighProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
+        terrain.draw();
+        shadowMap.Unbind();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shader.Activate();
         camera.InputHandler(window);
         // Updates and exports the camera matrix to the Vertex Shader
@@ -102,6 +122,16 @@ int Window::display(void)
         shader.setVec3("sunDirection", sunDirection);
         shader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 0.8f));  // Warm white light
         shader.setVec3("viewPos", camera.position);
+        // Transform the matrices to their correct form
+        glm::mat4 trans = glm::translate(trans, translation);
+        glm::mat4 rot = glm::mat4_cast(rotation);
+        glm::mat4 sca = glm::scale(sca, scale);
+
+        // Push the matrices to the vertex shader (POPRAWIC NA UZYCIE SETMAT4)
+        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
+        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
+        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
+        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
         //mapTexture.Bind();
         glActiveTexture(GL_TEXTURE0);
         snowTex.Bind();
@@ -110,11 +140,8 @@ int Window::display(void)
         glActiveTexture(GL_TEXTURE2);
         soilTex.Bind();
         glActiveTexture(GL_TEXTURE3);
-        stoneTex.Bind();
-        snowTex.Bind();
-        stoneTex.Bind();
-        grassTex.Bind();
-        soilTex.Bind();
+        shadowMap.BindForReading(GL_TEXTURE6);
+        glActiveTexture(GL_TEXTURE6);
         terrain.draw();
         snowTex.Unbind();
         stoneTex.Unbind();
