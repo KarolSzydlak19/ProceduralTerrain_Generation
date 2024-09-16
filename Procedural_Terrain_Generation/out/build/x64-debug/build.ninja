@@ -89,6 +89,14 @@ build CMakeFiles\glad.dir\src\ShadowMap.cpp.obj: CXX_COMPILER__glad_unscanned_De
   TARGET_COMPILE_PDB = CMakeFiles\glad.dir\glad.pdb
   TARGET_PDB = glad.pdb
 
+build CMakeFiles\glad.dir\src\Skybox.cpp.obj: CXX_COMPILER__glad_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\Skybox.cpp || cmake_object_order_depends_target_glad
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
+  INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
+  OBJECT_DIR = CMakeFiles\glad.dir
+  OBJECT_FILE_DIR = CMakeFiles\glad.dir\src
+  TARGET_COMPILE_PDB = CMakeFiles\glad.dir\glad.pdb
+  TARGET_PDB = glad.pdb
+
 
 # =============================================================================
 # Link build statements for STATIC_LIBRARY target glad
@@ -97,7 +105,7 @@ build CMakeFiles\glad.dir\src\ShadowMap.cpp.obj: CXX_COMPILER__glad_unscanned_De
 #############################################
 # Link the static library glad.lib
 
-build glad.lib: CXX_STATIC_LIBRARY_LINKER__glad_Debug CMakeFiles\glad.dir\External\Libraries\include\glad\glad.c.obj CMakeFiles\glad.dir\src\stb.cpp.obj CMakeFiles\glad.dir\src\Texture.cpp.obj CMakeFiles\glad.dir\src\Sphere.cpp.obj CMakeFiles\glad.dir\src\ShadowMap.cpp.obj
+build glad.lib: CXX_STATIC_LIBRARY_LINKER__glad_Debug CMakeFiles\glad.dir\External\Libraries\include\glad\glad.c.obj CMakeFiles\glad.dir\src\stb.cpp.obj CMakeFiles\glad.dir\src\Texture.cpp.obj CMakeFiles\glad.dir\src\Sphere.cpp.obj CMakeFiles\glad.dir\src\ShadowMap.cpp.obj CMakeFiles\glad.dir\src\Skybox.cpp.obj
   LANGUAGE_COMPILE_FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
   LINK_FLAGS = /machine:x64
   OBJECT_DIR = CMakeFiles\glad.dir
@@ -220,6 +228,14 @@ build CMakeFiles\MyProject.dir\src\ShadowMap.cpp.obj: CXX_COMPILER__MyProject_un
   TARGET_COMPILE_PDB = CMakeFiles\MyProject.dir\
   TARGET_PDB = MyProject.pdb
 
+build CMakeFiles\MyProject.dir\src\Skybox.cpp.obj: CXX_COMPILER__MyProject_unscanned_Debug C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\Skybox.cpp || cmake_object_order_depends_target_MyProject
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
+  INCLUDES = -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glad -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glfw -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\glm -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\KHR -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\include\stb -IC:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\src\headers
+  OBJECT_DIR = CMakeFiles\MyProject.dir
+  OBJECT_FILE_DIR = CMakeFiles\MyProject.dir\src
+  TARGET_COMPILE_PDB = CMakeFiles\MyProject.dir\
+  TARGET_PDB = MyProject.pdb
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target MyProject
@@ -228,7 +244,7 @@ build CMakeFiles\MyProject.dir\src\ShadowMap.cpp.obj: CXX_COMPILER__MyProject_un
 #############################################
 # Link the executable MyProject.exe
 
-build MyProject.exe: CXX_EXECUTABLE_LINKER__MyProject_Debug CMakeFiles\MyProject.dir\src\EBO.cpp.obj CMakeFiles\MyProject.dir\src\VAO.cpp.obj CMakeFiles\MyProject.dir\src\VBO.cpp.obj CMakeFiles\MyProject.dir\src\Shader.cpp.obj CMakeFiles\MyProject.dir\src\Camera.cpp.obj CMakeFiles\MyProject.dir\src\Map.cpp.obj CMakeFiles\MyProject.dir\src\Procedural_Terrain_Generation.cpp.obj CMakeFiles\MyProject.dir\src\Window.cpp.obj CMakeFiles\MyProject.dir\src\MapBuilder.cpp.obj CMakeFiles\MyProject.dir\src\stb.cpp.obj CMakeFiles\MyProject.dir\src\Texture.cpp.obj CMakeFiles\MyProject.dir\src\Sphere.cpp.obj CMakeFiles\MyProject.dir\src\ShadowMap.cpp.obj | glad.lib C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\lib\glfw3.lib || glad.lib
+build MyProject.exe: CXX_EXECUTABLE_LINKER__MyProject_Debug CMakeFiles\MyProject.dir\src\EBO.cpp.obj CMakeFiles\MyProject.dir\src\VAO.cpp.obj CMakeFiles\MyProject.dir\src\VBO.cpp.obj CMakeFiles\MyProject.dir\src\Shader.cpp.obj CMakeFiles\MyProject.dir\src\Camera.cpp.obj CMakeFiles\MyProject.dir\src\Map.cpp.obj CMakeFiles\MyProject.dir\src\Procedural_Terrain_Generation.cpp.obj CMakeFiles\MyProject.dir\src\Window.cpp.obj CMakeFiles\MyProject.dir\src\MapBuilder.cpp.obj CMakeFiles\MyProject.dir\src\stb.cpp.obj CMakeFiles\MyProject.dir\src\Texture.cpp.obj CMakeFiles\MyProject.dir\src\Sphere.cpp.obj CMakeFiles\MyProject.dir\src\ShadowMap.cpp.obj CMakeFiles\MyProject.dir\src\Skybox.cpp.obj | glad.lib C$:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\lib\glfw3.lib || glad.lib
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = glad.lib  C:\Users\karol\Praca_Inzynierska\Procedural_Terrain_Generation\Procedural_Terrain_Generation\External\libraries\lib\glfw3.lib  opengl32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib

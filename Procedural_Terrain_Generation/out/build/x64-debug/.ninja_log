@@ -12,10 +12,14 @@
 20	1806	7475942944092565	CMakeFiles/MyProject.dir/src/Camera.cpp.obj	d2a36ac9e71f4f43
 26	1886	7475942945050189	CMakeFiles/MyProject.dir/src/Map.cpp.obj	e56571a552749834
 8	660	7475993659880875	CMakeFiles/MyProject.dir/src/ShadowMap.cpp.obj	3571731c9c1b38a8
-4	1622	7476043990850996	CMakeFiles/MyProject.dir/src/Window.cpp.obj	5aef8e729f844212
+4	1166	7482016637594172	CMakeFiles/MyProject.dir/src/Window.cpp.obj	5aef8e729f844212
 8	1347	7475964344651697	CMakeFiles/MyProject.dir/src/Procedural_Terrain_Generation.cpp.obj	4f5f2fbaad3e5862
 657	712	7475993660391862	glad.lib	370a8846c8b2138a
-44	1793	7475942943952937	CMakeFiles/MyProject.dir/src/MapBuilder.cpp.obj	6479a10443374121
+5	734	7482005275993654	CMakeFiles/MyProject.dir/src/MapBuilder.cpp.obj	6479a10443374121
 1755	2589	7475942952262684	CMakeFiles/MyProject.dir/src/Texture.cpp.obj	f948b23977bc5212
-1623	1833	7476043992366951	MyProject.exe	cdfcfc11d66b5910
+1167	1365	7482016638974018	MyProject.exe	cdfcfc11d66b5910
 4	656	7475993659880875	CMakeFiles/glad.dir/src/ShadowMap.cpp.obj	11d8c64ab492198a
+5	481	7482118083757296	CMakeFiles/glad.dir/src/Skybox.cpp.obj	5aae3bd28f9d2b42
+9	485	7482118083757296	CMakeFiles/MyProject.dir/src/Skybox.cpp.obj	d94b85efa8973bed
+482	552	7482118084382193	glad.lib	175f513f37f8abd3
+552	851	7482118086921265	MyProject.exe	901a3719763b8ca9

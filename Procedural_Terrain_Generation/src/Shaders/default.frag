@@ -24,15 +24,12 @@ float defaultAmbient = 0.15f;
 float shadow = 0.0f;
 vec3 lightCoords = fragPosLight.xyz / fragPosLight.w;
 
-void main()
-{
+// Function to calculate texture blending based on height
+vec4 blendTextures(float height, vec2 texCoord) {
     // Define height thresholds for different textures
     float snowHeight = 300.0;
-    float rockHeight = 200.0;
+    float rockHeight = 100.0;
     float grassHeight = -1000000.0;
-
-    //lighting constants:
-    float lightIntensity = 3.0f;
 
     // Calculate weights for each texture based on height
     float snowWeight = smoothstep(rockHeight, snowHeight, height);
@@ -46,6 +43,38 @@ void main()
     vec4 grassColor = texture(grassTexture, texCoord);
     vec4 soilColor = texture(soilTexture, texCoord);
 
+    // Blend the colors based on the calculated weights
+    return snowColor * snowWeight + rockColor * rockWeight + grassColor * grassWeight + soilColor * soilWeight;
+}
+
+vec4 directLight(vec4 textureColor, vec3 normal, vec3 lightDirection, vec3 viewPos, vec3 fragPos, vec3 lightColor) {
+    float ambientStrength = 0.15f;
+    float specularStrength = 0.50f;
+
+    // Normalize the inputs
+    vec3 norm = normalize(normal);
+    vec3 lightDir = normalize(lightDirection);
+    vec3 viewDir = normalize(viewPos - fragPos);
+
+    // Ambient lighting
+    vec3 ambient = ambientStrength * textureColor.rgb;
+
+    // Diffuse lighting
+    float diff = max(dot(norm, lightDir), 0.0f);
+    vec3 diffuse = diff * lightColor * textureColor.rgb;
+
+    // Specular lighting
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0f), 16.0f);
+    vec3 specular = spec * specularStrength * textureColor.rgb;
+
+    // Combine the results
+    vec3 lighting = ambient + diffuse + specular;
+
+    return vec4(lighting, textureColor.a);  // Return the color with the alpha of the texture
+}
+
+void main() {
     // Normal mapping
     vec3 normalFromMap = texture(normalMap, texCoord).rgb;
     normalFromMap = normalFromMap * 2.0 - 1.0;  // Convert from [0,1] to [-1,1]
@@ -57,24 +86,18 @@ void main()
     mat3 TBN = mat3(T, B, N);
     vec3 worldNormal = normalize(TBN * normalFromMap);
 
-    // Lighting calculations
-    vec3 finalLightColor = lightColor * lightIntensity;
-    //vec3 lightDir = normalize(sunDirection - fragPos);  // Calculate light direction
+    // Use the separate blendTextures function to blend textures based on height
+    vec4 blendedColor = blendTextures(height, texCoord);
+
+    // Define light direction (ensure it's normalized)
     vec3 lightDir = normalize(-sunDirection);
-    vec3 ambient = defaultAmbient * finalLightColor;  // Ambient lighting
-    float diff = max(dot(worldNormal, lightDir), 0.0f);
-    vec3 diffuse = diff * finalLightColor;  // Diffuse lighting
 
-    vec3 viewDir = normalize(viewPos - fragPos);  // Direction to the viewer
-    vec3 reflectDir = reflect(-lightDir, worldNormal);  // Reflection direction
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);  // Specular lighting
-    vec3 specular = spec * finalLightColor;
+    // Apply direct lighting using your function
+    vec4 litColor = directLight(blendedColor, worldNormal, lightDir, viewPos, fragPos, lightColor);
 
-    vec3 lighting = (ambient + diffuse + specular);  // Combine lighting components
-
-    //ShadowMap
+    // Shadow mapping
     if (lightCoords.z <= 1.0f) {
-        lightCoords = (lightCoords + 1.0f) / 2.0f;
+        //lightCoords = (lightCoords + 1.0f) / 2.0f;
 
         float closestDepth = texture(shadowMap, lightCoords.xy).r;
         float currentDepth = lightCoords.z;
@@ -82,10 +105,10 @@ void main()
         if (currentDepth - bias > closestDepth) {
             shadow = 1.0f;
         }
+        
     }
-
-    // Blend the colors based on the calculated weights
-    vec4 finalColor = (snowColor * snowWeight + rockColor * rockWeight + grassColor * grassWeight + soilColor * soilWeight) * (vec4(lighting, 1.0) * (1.0f - shadow));
+    // Apply shadow to the lit color
+    vec4 finalColor = litColor * (1.0f - shadow);
 
     FragColor = finalColor;  // Output the final color
 }

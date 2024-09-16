@@ -30,6 +30,6 @@
     "\\src\\Shaders",
     "\\src\\Textures"
   ],
-  "SelectedNode": "\\src\\Shaders\\default.frag",
+  "SelectedNode": "\\src\\headers\\Skybox.h",
   "PreviewInSolutionExplorer": false
 }

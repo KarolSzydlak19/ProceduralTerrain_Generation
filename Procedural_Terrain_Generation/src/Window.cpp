@@ -3,7 +3,7 @@
 
 int Window::display(void)
 {
-    float roughness = 18000.0f;
+    float roughness = 15000.0f;
     GLFWwindow* window;
     /* Initialize the library */
     if (!glfwInit()) {
@@ -52,7 +52,7 @@ int Window::display(void)
     Texture snowTex("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\snow.tga", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
     Texture grassTex("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\grass.tga", GL_TEXTURE_2D, GL_TEXTURE1, GL_RGB, GL_UNSIGNED_BYTE);
     Texture soilTex("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\soil.tga", GL_TEXTURE_2D, GL_TEXTURE2, GL_RGB, GL_UNSIGNED_BYTE);
-    Texture stoneTex("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\stone.tga", GL_TEXTURE_2D, GL_TEXTURE3, GL_RGB, GL_UNSIGNED_BYTE);
+    Texture stoneTex("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\stone2.tga", GL_TEXTURE_2D, GL_TEXTURE3, GL_RGB, GL_UNSIGNED_BYTE);
     //mapTexture.texUnit(shader, "mapSurfaceTexture", 0);
     std::cout << "tex loaded" << std::endl;
     snowTex.texUnit(shader, "snowTexture", 0);
@@ -87,7 +87,7 @@ int Window::display(void)
 
 
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 0.80f);
-    glm::vec3 sunDirection = glm::normalize(glm::vec3(-0.3f, -1.0f, -0.5f));  // Direction vector for sunlight
+    glm::vec3 sunDirection = glm::normalize(glm::vec3(0.2f, 0.6f, 0.1f));  // Direction vector for sunlight
     // SHADOWS
     ShadowMap shadowMap(2048, 2048);
     glm::mat4 orthagonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
@@ -102,6 +102,7 @@ int Window::display(void)
     glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
     glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    // SKYBOX
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color and depth buffers
@@ -120,7 +121,7 @@ int Window::display(void)
         //lighting 
         shader.Activate();  // Activate your terrain shader
         shader.setVec3("sunDirection", sunDirection);
-        shader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 0.8f));  // Warm white light
+        shader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));  // Warm white light
         shader.setVec3("viewPos", camera.position);
         // Transform the matrices to their correct form
         glm::mat4 trans = glm::translate(trans, translation);
@@ -140,6 +141,7 @@ int Window::display(void)
         glActiveTexture(GL_TEXTURE2);
         soilTex.Bind();
         glActiveTexture(GL_TEXTURE3);
+        stoneTex.Bind();
         shadowMap.BindForReading(GL_TEXTURE6);
         glActiveTexture(GL_TEXTURE6);
         terrain.draw();
