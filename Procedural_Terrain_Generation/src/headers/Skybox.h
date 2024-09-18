@@ -24,10 +24,10 @@ private:
 	unsigned int cubeMapTexture;
 	int textureWidth, textureHeight, nrChannels;
 	unsigned char* data;
-	Shader skyboxShader;
+	Shader& skyboxShader;
 
 public:
-	Skybox(std::string texturePath);
+	Skybox(Shader& skyboxShader);
 	~Skybox();
 	void initTexture(const char* image);
 	unsigned char* extractFace(unsigned char* data, int faceWidth, int faceHeight, int xOffset, int yOffset);

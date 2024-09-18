@@ -1,14 +1,17 @@
 #include "Skybox.h"
 #include <gtc/type_ptr.hpp>
 
-Skybox::Skybox(std::string texturePath) {
+Skybox::Skybox(Shader& skyboxShader) :
+    skyboxShader(skyboxShader)
+{
     float vertices[] = {
         -1.0f, -1.0f, 1.0f,  
         1.0f, -1.0f, 1.0f,    
         1.0f, -1.0f, -1.0f,  
         -1.0f, -1.0f, -1.0f, 
         -1.0f, 1.0f, 1.0f,    
-        1.0f, 1.0f, 1.0f,     
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, -1.0f,
         -1.0f, 1.0f, -1.0f,   
     };
 
@@ -50,15 +53,23 @@ Skybox::Skybox(std::string texturePath) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    initShader();
+    std::cout << "IN SKYBOX --> " << skyboxShader.ID << std::endl;
+    int index = 0;
+    for (int i = 0; i < 8; i++) {
+        std::cout << skyboxVertices[index] << " " << skyboxVertices[index + 1] << " " << skyboxVertices[index + 2] << std::endl;
+        index += 3;
+    }
 }
 
 Skybox::~Skybox() {
     if (data) {
-        stbi_image_free(data);
+        //stbi_image_free(data);
     }
 }
 
 void Skybox::initTexture(const char* image) {
+    std::cout << "SKYBOX INITIALIZATION" << std::endl;
     glGenTextures(1, &cubeMapTexture);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -74,30 +85,33 @@ void Skybox::initTexture(const char* image) {
         stbi_set_flip_vertically_on_load(false);
 
         // Right face
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, faceWidth, faceHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, 2 * faceWidth, faceHeight));
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, faceWidth, faceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, 2 * faceWidth, faceHeight));
 
         // Left face
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, faceWidth, faceHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, 0, faceHeight));
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, faceWidth, faceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, 0, faceHeight));
 
         // Top face
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, faceWidth, faceHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, faceWidth, 0));
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, faceWidth, faceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, faceWidth, 0));
 
         // Bottom face
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, faceWidth, faceHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, faceWidth, 2 * faceHeight));
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, faceWidth, faceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, faceWidth, 2 * faceHeight));
 
         // Front face
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, faceWidth, faceHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, faceWidth, faceHeight));
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, faceWidth, faceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, faceWidth, faceHeight));
 
         // Back face
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, faceWidth, faceHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, 3 * faceWidth, faceHeight));
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, faceWidth, faceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, 3 * faceWidth, faceHeight));
         stbi_image_free(data);
+        std::cerr << "Texture loaded " << image << std::endl;
+
     }
     else {
-        std::cerr << "Failed to load texture at: " << image << std::endl;
+        std::cerr << "####Failed to load texture at:#### " << image << std::endl;
     }
 }
 
 unsigned char* Skybox::extractFace(unsigned char* data, int faceWidth, int faceHeight, int xOffset, int yOffset) {
+    std::cout << "SKYBOX TEXTURE EXTRACTION" << std::endl;
     unsigned char* subTexture = new unsigned char[faceWidth * faceHeight * nrChannels];
 
     // Loop through each row of the face and copy the correct portion of the data
@@ -116,7 +130,7 @@ void Skybox::draw(glm::mat4 view, glm::mat4 projection) {
     glDepthFunc(GL_LEQUAL);
     skyboxShader.Activate();
     glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "porjection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     glBindVertexArray(skyboxVAO);
     glActiveTexture(GL_TEXTURE7);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
@@ -126,7 +140,6 @@ void Skybox::draw(glm::mat4 view, glm::mat4 projection) {
 }
 
 void Skybox::initShader() {
-    skyboxShader = Shader("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Shaders\\skybox.vert", "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src/Shaders\\skybox.frag");
     skyboxShader.Activate();
-    glUniform1i(glGetUniformLocation(skyboxShader.ID, "skybox"), 0);
+    glUniform1i(glGetUniformLocation(skyboxShader.ID, "skybox"), 7);
 }

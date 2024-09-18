@@ -11,6 +11,7 @@
 #include "Map.h"
 #include "Sphere.h"
 #include "ShadowMap.h"
+#include "Skybox.h"
 #include <Camera.h>
 #include <filesystem>
 #ifndef WINDOW_H

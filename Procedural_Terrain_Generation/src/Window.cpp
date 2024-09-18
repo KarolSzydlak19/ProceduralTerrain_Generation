@@ -1,9 +1,13 @@
 #include"Window.h"
 #include "SunTextureGenerator.cpp"
+#include <gtx/string_cast.hpp>
 
 int Window::display(void)
 {
     float roughness = 15000.0f;
+    int width = 1920;
+    int height = 1080;
+    float farplane = 2000000.0f;
     GLFWwindow* window;
     /* Initialize the library */
     if (!glfwInit()) {
@@ -11,7 +15,7 @@ int Window::display(void)
     }
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(1920, 1080, "PTG", NULL, NULL);
+    window = glfwCreateWindow(width, height, "PTG", NULL, NULL);
     if (!window) {
         glfwTerminate();
         return -1;
@@ -75,8 +79,8 @@ int Window::display(void)
     glEnable(GL_DEPTH_TEST); // Enable depth testing
     glClearColor(0.0f, 0.45f, 0.63f, 1.0f);
     //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK); // Cull back faces
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK); // Cull back faces
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -103,6 +107,10 @@ int Window::display(void)
     glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
     glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
     // SKYBOX
+    Shader skyboxShader("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Shaders\\skybox.vert", "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src/Shaders\\skybox.frag");
+    Skybox skybox(skyboxShader);
+    skybox.initTexture("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\StandardCubeMap.tga");
+    std::cout << "IN WINDOW --> " << skyboxShader.ID << std::endl;
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color and depth buffers
@@ -117,7 +125,7 @@ int Window::display(void)
         camera.InputHandler(window);
         // Updates and exports the camera matrix to the Vertex Shader
         camera.Matrix(shader, "camMatrix");
-        camera.updateMatrix(120.0f, 0.1f, 1000000.0f);
+        camera.updateMatrix(120.0f, 0.1f, farplane);
         //lighting 
         shader.Activate();  // Activate your terrain shader
         shader.setVec3("sunDirection", sunDirection);
@@ -170,6 +178,15 @@ int Window::display(void)
         sunTex.Bind();
         sunSphere.Draw(sunShader, sunPosition, sunScale, glm::vec3(1.0f, 1.0f, 0.0f)); // Drawing the sphere as the sun
         sunTex.Unbind();
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 projection = glm::mat4(1.0f);
+        view = glm::mat4(glm::mat3(glm::lookAt(camera.position, camera.position + camera.orientation, camera.up)));
+        projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, farplane);
+        skybox.draw(view, projection);
+        GLenum error = glGetError();
+        if (error != GL_NO_ERROR) {
+            std::cerr << "OpenGL Error: " << error << std::endl;
+        }
         //terrain.drawNormals();
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
