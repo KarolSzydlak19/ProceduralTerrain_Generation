@@ -13,6 +13,8 @@
 #include <Shader.h>
 #include "Texture.h"
 #include "MapBuilder.h"
+#include "PerlinNoiseGenerator.h"
+#include <glm/gtc/noise.hpp>
 class MapBuilder;
 class Map {
 private:
@@ -21,6 +23,7 @@ private:
 	VBO* mapVBO;
 	std::vector<std::vector<glm::vec3>>& map;
 	float roughness;
+	float flatteningScale;
 	int size;
 	GLfloat* vertices;
 	GLuint* indices;
@@ -28,11 +31,26 @@ private:
 	std::vector<glm::vec3> tangents;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec3> normalLines;
-	GLuint normalVAO, normalVBO;
+	GLuint normalVAO, normalVBO, tangentVBO;
+	std::vector<std::vector<float>> noiseMap;
+	PerlinNoiseGenerator noiseGen;
+	GLuint noiseTexture;
+	float maxTextureNoise;
+	float minY;
+	float maxY;
 public:
-
+	float getMinY();
+	float getMaxY();
+	void searchEdgeValues();
+	void setFlattening(float val);
+	void setTexNoise(float val);
+	void setRoughness(float roughness);
+	void setSize(int size);
 	void Diamond_step(int x, int y, int stepSize, float scale);
 	void Square_step(int x, int y, int stepSize, float scale);
+	void generateNoiseMap(int size, float baseFrequency, int octaves, float persistence, float maxNoiseAmplitude);
+	void generateNoiseTexture();
+	void uploadNoiseTexture(Shader& shader);
 	float randomOffset(float range);	//get random value decreasing with reach iteration
 	void generate();
 	void print();
@@ -43,10 +61,11 @@ public:
 	void draw();
 	void initAxes();
 	void initObjects();
+	void cleanUpObjects();
 	void generateTangents();
 	void generateNormals();
 	void generateNormalLines();
 	void initNormalObjects();
 	void drawNormals();
-	Map(int size, float roughness, std::vector<std::vector<glm::vec3>>& map, MapBuilder& mapBuilder);
+	Map(int size, float roughness, float flatteningScale, float maxTextureNoise, std::vector<std::vector<glm::vec3>>& map, MapBuilder& mapBuilder, PerlinNoiseGenerator noiseGen);
 };

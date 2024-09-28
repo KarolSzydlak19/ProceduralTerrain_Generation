@@ -1,14 +1,27 @@
 #include "MapBuilder.h"
 #include <cstdlib>
 
-MapBuilder::MapBuilder(std::vector<std::vector<glm::vec3>>& map) :
-    map(map) {
+MapBuilder::MapBuilder(std::vector<std::vector<glm::vec3>>& map, float meshOffset) :
+    map(map), meshOffset(meshOffset) {
+    maxY = minY = 0;
 }
 
 float MapBuilder::randomOffset(float range) {
     float offset =  ((rand() % 100) / 100.0f) * range * 2 - range;
     //std::cout <<"Range " << range << " Random Offset: " << offset << std::endl;
     return offset;
+}
+
+float MapBuilder::getMinY() {
+    return minY;
+}
+
+float MapBuilder ::getMaxY() {
+    return maxY;
+}
+
+void MapBuilder::setOffset(float offset) {
+    meshOffset = offset;
 }
 
 void MapBuilder::Diamond_step(int x, int y, int stepSize, float scale, int size) {
@@ -64,7 +77,7 @@ void MapBuilder::initAxes(int size) {
     float x = 0.0f;
     for (int i = 0; i < size; i++) {
         //x += 0.05;
-        x += 100.0f;
+        x += meshOffset;
         float z = 0;
         for (int j = 0; j < size; j++) {
             map[i][j].x = x;
@@ -73,7 +86,7 @@ void MapBuilder::initAxes(int size) {
     float y = 0.0f;
     for (int i = 0; i < size; i++) {
         //y += 0.05;
-        y += 100.0f;
+        y += meshOffset;
         for (int j = 0; j < size; j++) {
             map[j][i].z = y;
         }

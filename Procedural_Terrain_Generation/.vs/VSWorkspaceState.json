@@ -23,6 +23,8 @@
   },
   "ExpandedNodes": [
     "",
+    "\\External",
+    "\\External\\imgui",
     "\\out",
     "\\out\\build",
     "\\src",

@@ -1,16 +1,100 @@
 #include "Map.h"
 #include <Shader.h>
 
-Map::Map(int size, float roughness, std::vector<std::vector<glm::vec3>>& map, MapBuilder& mapBuilder)
-    : size(size), roughness(roughness), map(map), mapBuilder(mapBuilder) {
+Map::Map(int size, float roughness, float flatteningScale, float maxTextureNoise, std::vector<std::vector<glm::vec3>>& map, MapBuilder& mapBuilder, PerlinNoiseGenerator noiseGen)
+    : size(size), roughness(roughness), flatteningScale(flatteningScale), maxTextureNoise(maxTextureNoise), map(map), mapBuilder(mapBuilder), noiseGen(noiseGen) {
     // Initialize the corners
     map[0][0].y = randomOffset(roughness);
     map[0][size - 1].y = randomOffset(roughness);
     map[size - 1][0].y = randomOffset(roughness);
     map[size - 1][size - 1].y = randomOffset(roughness);
-    mapVAO = new VAO();
+    //generateNoiseMap(1024, 0.05f, 6, 0.5f, 1.0f);
+    //generateNoiseTexture();
+    mapVAO = nullptr;
     mapEBO = nullptr;
     mapVBO = nullptr;
+    maxY = minY = 0;
+}
+
+float Map::getMinY() {
+    return minY;
+}
+
+float Map::getMaxY() {
+    return maxY;
+}
+
+void Map::setRoughness(float val) {
+    roughness = val;
+}
+
+void Map::setFlattening(float val) {
+    flatteningScale = val;
+}
+
+void Map::setSize(int mapSize) {
+    size = mapSize;
+}
+
+void Map::setTexNoise(float val) {
+    maxTextureNoise = val;
+}
+
+void Map::searchEdgeValues() {
+
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            if (map[i][j].y < minY) {
+                minY = map[i][j].y;
+            }
+            if (map[i][j].y > maxY) {
+                maxY = map[i][j].y;
+            }
+        }
+    }
+}
+
+void Map::generateNoiseMap(int size, float baseFrequency, int octaves, float persistence, float maxNoiseAmplitude) {
+   /* std::cout << "Before gen" << std::endl;
+    noiseMap.resize(size, std::vector<float>(size, 0.0f));
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            float x = i * baseFrequency;
+            float y = j * baseFrequency;
+            noiseMap[i][j] = glm::clamp(noiseGen.fractalNoise(x, y, octaves, persistence, baseFrequency, maxNoiseAmplitude), 0.0f, 1.0f);
+        }
+    }
+    std::cout << "After gen" << std::endl;*/
+}
+
+void Map::generateNoiseTexture() {
+   /* std::cout << "Before tex gen" << std::endl;
+    std::vector<float> flatNoiseMap(size * size);
+    std::cout << "after tex gen" << std::endl;
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            flatNoiseMap[i * size + j] = noiseMap[i][j];
+        }
+    }
+    std::cout << "after tex gen" << std::endl;
+    glGenTextures(1, &noiseTexture);
+    glBindTexture(GL_TEXTURE_2D, noiseTexture);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, size, size, 0, GL_RED, GL_FLOAT, flatNoiseMap.data());
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    std::cout << "after tex gen" << std::endl;*/
+}
+
+void Map::uploadNoiseTexture(Shader& shader) {
+    //std::cout << "NOOOOOOOOOOOIIIIIIIIIIIIIIIIIISSSSSSSSSSEEEEEEEEEEEEEEEEEEE " << shader.ID << noiseTexture << std::endl;
+    glActiveTexture(GL_TEXTURE1);  
+    glBindTexture(GL_TEXTURE_2D, noiseTexture);  
+    shader.Activate();
+    glUniform1i(glGetUniformLocation(shader.ID, "noiseTexture"), noiseTexture);
 }
 
 float Map::randomOffset(float range) {
@@ -26,6 +110,7 @@ void Map::Square_step(int x, int y, int halfStep, float scale) {
 
 void Map::generate() {
     //print();
+    std::cout << size << std::endl;
     int stepSize = size - 1;
     stepSize /= 2;
     float scale = roughness;
@@ -45,8 +130,9 @@ void Map::generate() {
         }
 
         stepSize /= 2;
-        scale /= 2.0f;
+        scale /= flatteningScale;
     }
+    searchEdgeValues();
     //std::cout << "AFTER" << std::endl;
     //print();
 }
@@ -218,14 +304,15 @@ void Map::drawNormals() {
 
 
 void Map::initObjects() {
+    mapVAO = new VAO();
     initAxes();
     generateVertices();
     generateIndices();
     generateTangents();
     generateNormals();
 
-    generateNormalLines();
-    initNormalObjects();
+    //generateNormalLines();
+    //initNormalObjects();
     mapVAO->Bind();
 
     mapVBO = new VBO(vertices, size * size * 5 * sizeof(GLfloat));
@@ -236,14 +323,12 @@ void Map::initObjects() {
 
     mapVAO->LinkAttrib(*mapVBO, 1, 2, GL_FLOAT, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
-    GLuint tangentVBO;
     glGenBuffers(1, &tangentVBO);
     glBindBuffer(GL_ARRAY_BUFFER, tangentVBO);
     glBufferData(GL_ARRAY_BUFFER, tangents.size() * sizeof(glm::vec3), &tangents[0], GL_STATIC_DRAW);
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glEnableVertexAttribArray(2);
 
-    GLuint normalVBO;
     glGenBuffers(1, &normalVBO);
     glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
     glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
@@ -254,6 +339,60 @@ void Map::initObjects() {
     mapEBO->Unbind();
     mapVBO->Unbind();
 }
+
+void Map::cleanUpObjects() {
+    // Delete dynamically allocated memory for vertices and indices
+    if (vertices != nullptr) {
+        delete[] vertices;
+        vertices = nullptr;
+    }
+
+    if (indices != nullptr) {
+        delete[] indices;
+        indices = nullptr;
+    }
+
+    // Delete the VAO, VBO, and EBO
+    if (mapVAO != nullptr) {
+        mapVAO->Unbind();
+        mapVAO->Delete();  
+        delete mapVAO;
+        mapVAO = nullptr;
+    }
+
+    if (mapVBO != nullptr) {
+        mapVBO->Unbind();
+        mapVBO->Delete(); 
+        delete mapVBO;
+        mapVBO = nullptr;
+    }
+
+    if (mapEBO != nullptr) {
+        mapEBO->Unbind();
+        mapEBO->Delete(); 
+        delete mapEBO;
+        mapEBO = nullptr;
+    }
+
+    // Delete normal lines buffer
+    if (glIsBuffer(normalVBO)) {
+        glDeleteBuffers(1, &normalVBO);
+    }
+
+    // Delete tangent buffer
+    if (glIsBuffer(tangentVBO)) {
+        glDeleteBuffers(1, &tangentVBO);
+    }
+
+    // Delete VAO and VBO for normal lines
+    if (glIsVertexArray(normalVAO)) {
+        glDeleteVertexArrays(1, &normalVAO);
+    }
+    if (glIsBuffer(normalVBO)) {
+        glDeleteBuffers(1, &normalVBO);
+    }
+}
+
 
 void Map::draw() {
     int indexCount = (size - 1) * (size - 1) * 6;

@@ -204,6 +204,18 @@ MyProject_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 MyProject_SOURCE_DIR:STATIC=C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation
 
+//Value Computed by CMake
+Myproject_BINARY_DIR:STATIC=C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/out/build/x64-debug
+
+//Value Computed by CMake
+Myproject_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+Myproject_SOURCE_DIR:STATIC=C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation
+
+//The directory containing a CMake configuration file for imgui.
+imgui_DIR:PATH=imgui_DIR-NOTFOUND
+
 
 ########################
 # INTERNAL cache entries

@@ -17,23 +17,23 @@ Skybox::Skybox(Shader& skyboxShader) :
 
     unsigned int indices[] = {
         // Right
-        1, 2, 6,
-        6, 5, 1,
+        1, 6, 2,
+        6, 1, 5,
         // Left
-        0, 4, 7,
-        7, 3, 0,
+        0, 7, 4,
+        7, 0, 3,
         // Top
-        4, 5, 6,
-        6, 7, 4,
+        4, 6, 5,
+        6, 4, 7,
         // Bottom
-        0, 3, 2,
-        2, 1, 0,
+        0, 2, 3,
+        2, 0, 1,
         // Back
-        0, 1, 5,
-        5, 4, 0,
+        0, 5, 1,
+        5, 0, 4,
         // Front
-        3, 7, 6,
-        6, 2, 3
+        3, 6, 7,
+        6, 3, 2
     };
 
     // Copy data into class members
@@ -83,24 +83,25 @@ void Skybox::initTexture(const char* image) {
         int faceWidth = textureWidth / 4;
         int faceHeight = textureHeight / 3;
         stbi_set_flip_vertically_on_load(false);
+        GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
 
         // Right face
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, faceWidth, faceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, 2 * faceWidth, faceHeight));
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, 2 * faceWidth, faceHeight));
 
         // Left face
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, faceWidth, faceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, 0, faceHeight));
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, 0, faceHeight));
 
         // Top face
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, faceWidth, faceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, faceWidth, 0));
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, faceWidth, 0));
 
         // Bottom face
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, faceWidth, faceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, faceWidth, 2 * faceHeight));
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, faceWidth, 2 * faceHeight));
 
         // Front face
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, faceWidth, faceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, faceWidth, faceHeight));
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, faceWidth, faceHeight));
 
         // Back face
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, faceWidth, faceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, 3 * faceWidth, faceHeight));
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, 3 * faceWidth, faceHeight));
         stbi_image_free(data);
         std::cerr << "Texture loaded " << image << std::endl;
 
@@ -118,7 +119,7 @@ unsigned char* Skybox::extractFace(unsigned char* data, int faceWidth, int faceH
     for (int row = 0; row < faceHeight; row++) {
         memcpy(
             subTexture + row * faceWidth * nrChannels,
-            data + ((yOffset + row) * textureWidth + xOffset) * nrChannels,
+            data + ((yOffset + (faceHeight -1 - row)) * textureWidth + xOffset) * nrChannels,
             faceWidth * nrChannels
         );
     }

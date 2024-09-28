@@ -9,6 +9,27 @@ in float height;   // Interpolated height from vertex shader
 in vec3 fragPos;
 in vec4 fragPosLight;
 
+//texture blending
+uniform float snowMin;
+uniform float snowMax;
+uniform float rockMin;
+uniform float rockMax;
+uniform float grassMin;
+uniform float grassMax;
+uniform float soilMin;
+uniform float soilMax;
+uniform float maxTextureNoise;
+
+//uniform float snowHeight;
+//uniform float rockHeight;
+//uniform float grassHeight;
+//uniform float soilHeight;
+uniform bool useSnowTex;
+uniform bool useGrassTex;
+uniform bool useRockTex;
+uniform bool useSoilTex;
+
+uniform sampler2D noiseTexture;  // Noise texture
 uniform sampler2D snowTexture;   // Snow texture
 uniform sampler2D grassTexture;  // Grass texture
 uniform sampler2D soilTexture;   // Soil texture
@@ -24,18 +45,94 @@ float defaultAmbient = 0.15f;
 float shadow = 0.0f;
 vec3 lightCoords = fragPosLight.xyz / fragPosLight.w;
 
+// NOISE FUNCTION
+float randomNoise(vec2 coords) {
+    // Use a basic random formula (this can be replaced by more complex noise later)
+    return fract(sin(dot(coords.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
 // Function to calculate texture blending based on height
 vec4 blendTextures(float height, vec2 texCoord) {
-    // Define height thresholds for different textures
-    float snowHeight = 300.0;
-    float rockHeight = 100.0;
-    float grassHeight = -1000000.0;
+    // Sample noise value
+    float noiseValue = texture(noiseTexture, texCoord).r; // red channel value
+    noiseValue = (noiseValue * 2.0 - 1.0) * maxTextureNoise;
+    //height += noiseValue;
+    // Initialize texture weights
+    float snowWeight = 0.0;
+    float rockWeight = 0.0;
+    float grassWeight = 0.0;
+    float soilWeight = 0.0;
 
-    // Calculate weights for each texture based on height
-    float snowWeight = smoothstep(rockHeight, snowHeight, height);
-    float rockWeight = smoothstep(grassHeight, rockHeight, height) * (1.0 - snowWeight);
-    float grassWeight = smoothstep(0.0, grassHeight, height) * (1.0 - rockWeight) * (1.0 - snowWeight);
-    float soilWeight = 1.0 - (snowWeight + rockWeight + grassWeight);
+    // Compute weights only if height is within the texture's range
+    if (useSnowTex && height >= snowMin && height <= snowMax) {
+        float snowMid = (snowMin + snowMax) * 0.5;
+         snowWeight = smoothstep(snowMin, snowMax, height);
+    }
+    if (useRockTex && height >= rockMin && height <= rockMax) {
+        float rockMid = (rockMin + rockMax) * 0.5;
+        rockWeight = smoothstep(rockMin, rockMax, height);
+    }
+    if (useGrassTex && height >= grassMin && height <= grassMax) {
+        float grassMid = (grassMin + grassMax) * 0.5;
+         grassWeight = smoothstep(grassMin, grassMax, height);
+    }
+    if (useSoilTex && height >= soilMin && height <= soilMax) {
+        float soilMid = (soilMin + soilMax) * 0.5;
+        soilWeight = smoothstep(soilMin, soilMax, height);
+    }
+
+    // Calculate total weight for normalization
+    float totalWeight = snowWeight + rockWeight + grassWeight + soilWeight;
+
+    // If total weight is zero (no textures in range), find the closest texture
+if (totalWeight == 0.0) {
+    float closestDistance = 1e6;  // Initialize with a very large distance
+    vec4 closestTexture = vec4(0.0, 0.0, 0.0, 1.0);  // Default to black if no texture is found
+
+    // Check distance to snow texture range
+    if (useSnowTex) {
+        float snowDist = min(abs(height - snowMin), abs(height - snowMax));
+        if (snowDist < closestDistance) {
+            closestDistance = snowDist;
+            closestTexture = texture(snowTexture, texCoord);
+        }
+    }
+
+    // Check distance to rock texture range
+    if (useRockTex) {
+        float rockDist = min(abs(height - rockMin), abs(height - rockMax));
+        if (rockDist < closestDistance) {
+            closestDistance = rockDist;
+            closestTexture = texture(stoneTexture, texCoord);
+        }
+    }
+
+    // Check distance to grass texture range
+    if (useGrassTex) {
+        float grassDist = min(abs(height - grassMin), abs(height - grassMax));
+        if (grassDist < closestDistance) {
+            closestDistance = grassDist;
+            closestTexture = texture(grassTexture, texCoord);
+        }
+    }
+
+    // Check distance to soil texture range
+    if (useSoilTex) {
+        float soilDist = min(abs(height - soilMin), abs(height - soilMax));
+        if (soilDist < closestDistance) {
+            closestDistance = soilDist;
+            closestTexture = texture(soilTexture, texCoord);
+        }
+    }
+
+    return closestTexture;  // Return the closest texture found (or black if none is found)
+}
+
+    // Normalize the weights
+    snowWeight /= totalWeight;
+    rockWeight /= totalWeight;
+    grassWeight /= totalWeight;
+    soilWeight /= totalWeight;
 
     // Sample each texture
     vec4 snowColor = texture(snowTexture, texCoord);
@@ -43,7 +140,7 @@ vec4 blendTextures(float height, vec2 texCoord) {
     vec4 grassColor = texture(grassTexture, texCoord);
     vec4 soilColor = texture(soilTexture, texCoord);
 
-    // Blend the colors based on the calculated weights
+    // Blend the colors based on the normalized weights
     return snowColor * snowWeight + rockColor * rockWeight + grassColor * grassWeight + soilColor * soilWeight;
 }
 

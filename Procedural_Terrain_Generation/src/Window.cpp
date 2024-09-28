@@ -4,10 +4,46 @@
 
 int Window::display(void)
 {
+    //terrain properties
     float roughness = 15000.0f;
+    float flatteningScale = 2.15f;
     int width = 1920;
     int height = 1080;
+    const int allowedSizes[] = { 257, 513, 1025, 2049, 4097 };
+    int currentMeshSizeIndex = 2;
+    const char* allowedSizesLabels[] = {"257", "513", "1025", "2049", "4097"};
+
+    //Camera properties
+    float nearplane = 0.1f;
     float farplane = 2000000.0f;
+    float fov = 120.0f;
+
+    //Texture properties
+    float maxTextureNoise = 15000.0f;
+    float minTexHeight = -100000.0f;
+    float maxTexHeight = 100000.0f;
+   // float grassHeight = -100000.0f;
+    //float rockHeight = 300.0f;
+    //float snowHeight = 400.0f;
+    //float soilHeight = 200.0f;
+    float snowMin = 400.0f;
+    float snowMax = 500.0f;
+    float rockMin = 300.0f;
+    float rockMax = 400.0f;
+    float grassMin = 200.0f;
+    float grassMax = 300.0f;
+    float soilMin = 100.0f;
+    float soilMax = 200.0f;
+    bool useGrassTex = true;
+    bool useRockTex = true;
+    bool useSnowTex = true;
+    bool useSoilTex = true;
+
+    //Lighting
+    bool enableShadows = true;
+
+    unsigned int samples = 8;
+    float meshPointDistance = 100.0f;
     GLFWwindow* window;
     /* Initialize the library */
     if (!glfwInit()) {
@@ -29,6 +65,16 @@ int Window::display(void)
         std::cerr << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+
+    glfwWindowHint(GLFW_SAMPLES, samples);
+    glEnable(GL_MULTISAMPLE);
     std::vector<std::vector<::glm::vec3>> map;
     int mapSize = 1025;
     //int mapSize = 25;
@@ -38,10 +84,13 @@ int Window::display(void)
     }
 
     std::cout << "Vector created" << std::endl;
-    MapBuilder mapBuilder(map);
-    Map terrain(mapSize, roughness, map, mapBuilder);
+    MapBuilder mapBuilder(map, meshPointDistance);
+    PerlinNoiseGenerator noiseGen;
+    Map terrain(mapSize, roughness, flatteningScale, maxTextureNoise, map, mapBuilder, noiseGen);
     std::cout << "Main Terrain gen starting" << std::endl;
     terrain.generate();
+    minTexHeight = terrain.getMinY();
+    maxTexHeight = terrain.getMaxY();
     Sphere sunSphere(500.0f, 100, 100); // SUN
     glm::vec3 sunPosition = glm::vec3(15000.0, 80000.0f, 15000.0f); // Position high above the terrain
     glm::vec3 sunScale = glm::vec3(20.0f); // Scale it to make it visible
@@ -79,7 +128,7 @@ int Window::display(void)
     glEnable(GL_DEPTH_TEST); // Enable depth testing
     glClearColor(0.0f, 0.45f, 0.63f, 1.0f);
     //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     //glCullFace(GL_BACK); // Cull back faces
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -109,11 +158,15 @@ int Window::display(void)
     // SKYBOX
     Shader skyboxShader("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Shaders\\skybox.vert", "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src/Shaders\\skybox.frag");
     Skybox skybox(skyboxShader);
-    skybox.initTexture("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\StandardCubeMap.tga");
+    skybox.initTexture("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\sunnySkybox.tga");
     std::cout << "IN WINDOW --> " << skyboxShader.ID << std::endl;
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color and depth buffers
+        //IMGUI
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
         // DRAW SHADOWMAP HERE????
         shadowShader.Activate();
         shadowMap.BindForWriting();
@@ -122,15 +175,32 @@ int Window::display(void)
         shadowMap.Unbind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shader.Activate();
-        camera.InputHandler(window);
+        if (!io.WantCaptureMouse) {
+            camera.InputHandler(window);
+        }
         // Updates and exports the camera matrix to the Vertex Shader
         camera.Matrix(shader, "camMatrix");
-        camera.updateMatrix(120.0f, 0.1f, farplane);
+        camera.updateMatrix(fov, nearplane, farplane);
         //lighting 
         shader.Activate();  // Activate your terrain shader
+        glUniform1f(glGetUniformLocation(shader.ID, "snowMin"), snowMin);
+        glUniform1f(glGetUniformLocation(shader.ID, "snowMax"), snowMax);
+        glUniform1f(glGetUniformLocation(shader.ID, "rockMin"), rockMin);
+        glUniform1f(glGetUniformLocation(shader.ID, "rockMax"), rockMax);
+        glUniform1f(glGetUniformLocation(shader.ID, "grassMin"), grassMin);
+        glUniform1f(glGetUniformLocation(shader.ID, "grassMax"), grassMax);
+        glUniform1f(glGetUniformLocation(shader.ID, "soilMin"), soilMin);
+        glUniform1f(glGetUniformLocation(shader.ID, "soilMax"), soilMax);
+        glUniform1f(glGetUniformLocation(shader.ID, "maxTextureNoise"), maxTextureNoise);
+
+        glUniform1i(glGetUniformLocation(shader.ID, "useSnowTex"), useSnowTex);
+        glUniform1i(glGetUniformLocation(shader.ID, "useGrassTex"), useGrassTex);
+        glUniform1i(glGetUniformLocation(shader.ID, "useRockTex"), useRockTex);
+        glUniform1i(glGetUniformLocation(shader.ID, "useSoilTex"), useSoilTex);
         shader.setVec3("sunDirection", sunDirection);
-        shader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));  // Warm white light
+        shader.setVec3("lightColor", lightColor);  // Warm white light
         shader.setVec3("viewPos", camera.position);
+        terrain.uploadNoiseTexture(shader);
         // Transform the matrices to their correct form
         glm::mat4 trans = glm::translate(trans, translation);
         glm::mat4 rot = glm::mat4_cast(rotation);
@@ -150,8 +220,10 @@ int Window::display(void)
         soilTex.Bind();
         glActiveTexture(GL_TEXTURE3);
         stoneTex.Bind();
-        shadowMap.BindForReading(GL_TEXTURE6);
-        glActiveTexture(GL_TEXTURE6);
+        if (enableShadows) {
+            shadowMap.BindForReading(GL_TEXTURE6);
+            glActiveTexture(GL_TEXTURE6);
+        }
         terrain.draw();
         snowTex.Unbind();
         stoneTex.Unbind();
@@ -176,7 +248,7 @@ int Window::display(void)
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glActiveTexture(GL_TEXTURE4);
         sunTex.Bind();
-        sunSphere.Draw(sunShader, sunPosition, sunScale, glm::vec3(1.0f, 1.0f, 0.0f)); // Drawing the sphere as the sun
+        //sunSphere.Draw(sunShader, sunPosition, sunScale, glm::vec3(1.0f, 1.0f, 0.0f)); // Drawing the sphere as the sun
         sunTex.Unbind();
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
@@ -188,13 +260,126 @@ int Window::display(void)
             std::cerr << "OpenGL Error: " << error << std::endl;
         }
         //terrain.drawNormals();
+        
+
+        ImGui::Begin("Terrain properties");
+        ImGui::Text("Elevation");
+        ImGui::SameLine();
+        ImGui::InputFloat("##elevation", &roughness, 0.0f, 0.0f, "%.2f");
+        ImGui::Text("Flattening scale");
+        ImGui::SameLine();
+        ImGui::InputFloat("##flatteningScale", &flatteningScale, 0.0f, 0.0f, "%.2f");
+        ImGui::Text("Mesh size");
+        ImGui::SameLine();
+        if (ImGui::Combo("##meshSizeSelection", &currentMeshSizeIndex, allowedSizesLabels, IM_ARRAYSIZE(allowedSizesLabels))) {
+            mapSize = allowedSizes[currentMeshSizeIndex];
+        }
+        ImGui::Text("Mesh offset");
+        ImGui::SameLine();
+        ImGui::InputFloat("#Distance between mesh points", &meshPointDistance, 0.0f, 0.0f, "%.2f");
+        
+        if (ImGui::Button("Generate")) {
+            terrain.cleanUpObjects();
+            bool genFinished = false;
+            ImGui::Text("Generating terrain...");
+            terrain.setRoughness(roughness);
+            terrain.setFlattening(flatteningScale);
+            terrain.setSize(mapSize);
+            map.resize(mapSize);
+            for (int i = 0; i < mapSize; i++) {
+                map[i].resize(mapSize, { 0.0f, 0.0f, 0.0f });
+            }
+            mapBuilder.setOffset(meshPointDistance);
+            terrain.generate();
+            terrain.initObjects();
+            minTexHeight = terrain.getMinY();
+            maxTexHeight = terrain.getMaxY();
+        }
+
+        ImGui::End();
+
+        ImGui::Begin("Camera");
+        ImGui::Text("Camera fov");
+        ImGui::SameLine();
+        ImGui::SliderFloat("##fovSlider", &fov, 60.f, 180.0f, "%.2f");
+        ImGui::Text("Nearplane");
+        ImGui::SameLine();
+        ImGui::InputFloat("##inputNearplane", &nearplane);
+        //ImGui::SliderFloat("##nearplane", &nearplane, 0.1f, 200000000.0f, "%.2f");
+        ImGui::Text("Farplane");
+        ImGui::SameLine();
+        ImGui::InputFloat("##inputFarplane", &farplane);
+        //ImGui::SliderFloat("##farplane", &farplane, 1.0f, 200000000.0f, "%.2f");
+        ImGui::End();
+
+        ImGui::Begin("Textures");
+        //Soil
+        ImGui::Text("Soil texture");
+        ImGui::SameLine();
+        ImGui::Checkbox("Use soil texture", &useSoilTex);
+        ImGui::Text("Min height treshold");
+        ImGui::SameLine();
+        ImGui::SliderFloat("##soilMinSlider", &soilMin, minTexHeight, maxTexHeight, "%.2f");
+        ImGui::Text("Max height treshold");
+        ImGui::SameLine();
+        ImGui::SliderFloat("##soilMaxSlider", &soilMax, minTexHeight, maxTexHeight, "%.2f");
+        // Grass
+        ImGui::Text("Grass texture");
+        ImGui::SameLine();
+        ImGui::Checkbox("Use grass texture", &useGrassTex);
+        ImGui::Text("Min height treshold");
+        ImGui::SameLine();
+        ImGui::SliderFloat("##grassMinSlider", &grassMin, minTexHeight, maxTexHeight, "%.2f");
+        ImGui::Text("Max height treshold");
+        ImGui::SameLine();
+        ImGui::SliderFloat("##grassMaxSlider", &grassMax, minTexHeight, maxTexHeight, "%.2f");
+
+        // Rock
+        ImGui::Text("Rock texture");
+        ImGui::SameLine();
+        ImGui::Checkbox("Use rock texture", &useRockTex);
+        ImGui::Text("Min height treshold");
+        ImGui::SameLine();
+        ImGui::SliderFloat("##rockMinSlider", &rockMin, minTexHeight, maxTexHeight, "%.2f");
+        ImGui::Text("Max height treshold");
+        ImGui::SameLine();
+        ImGui::SliderFloat("##rockMaxSlider", &rockMax, minTexHeight, maxTexHeight, "%.2f");
+
+        // Snow
+        ImGui::Text("Snow texture");
+        ImGui::SameLine();
+        ImGui::Checkbox("Use snow texture", &useSnowTex);
+        ImGui::Text("Min height treshold");
+        ImGui::SameLine();
+        ImGui::SliderFloat("##snowMinSlider", &snowMin, minTexHeight, maxTexHeight, "%.2f");
+        ImGui::Text("Max height treshold");
+        ImGui::SameLine();
+        ImGui::SliderFloat("##snowMaxSlider", &snowMax, minTexHeight, maxTexHeight, "%.2f");
+        ImGui::End();
+
+        ImGui::Begin("Lighting");
+        ImGui::Text("Enable shadows");
+        ImGui::SameLine();
+        ImGui::Checkbox("##shadowsCheckbox", &enableShadows);
+        ImGui::Text("Directional light");
+        ImGui::Text("Direction");
+        ImGui::SameLine();
+        ImGui::DragFloat3("##lightDirection", glm::value_ptr(sunDirection), 0.01f, -1.0f, 1.0f, "%.2f");
+        sunDirection = glm::normalize(sunDirection);  // Normalize direction
+        ImGui::Text("Light Color");
+        ImGui::ColorEdit3("##lightColor", glm::value_ptr(lightColor));
+        ImGui::End();
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
         /* Poll for and process events */
         glfwPollEvents();
     }
-
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     glfwTerminate();
     return 0;
 }
