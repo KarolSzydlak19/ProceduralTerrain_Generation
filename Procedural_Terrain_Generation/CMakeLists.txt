@@ -26,7 +26,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/headers)
 include_directories(${IMGUI_DIR})
 
 # Add GLAD source file
-add_library(glad ${INCLUDE_DIR}/glad/glad.c "src/headers/PerlinNoiseGenerator.h" "src/PerlinNoiseGenerator.cpp")
+add_library(glad ${INCLUDE_DIR}/glad/glad.c "src/headers/PerlinNoiseGenerator.h" "src/PerlinNoiseGenerator.cpp" "src/headers/SimplexNoiseGenerator.h" "src/SimplexNoiseGenerator.cpp")
 
 # Source files
 set(SOURCES
@@ -53,7 +53,7 @@ set(SOURCES
 )
 
 # Add the executable
-add_executable(MyProject ${SOURCES} "src/stb.cpp" "src/headers/Texture.h" "src/Texture.cpp" "src/headers/Window.h" "src/headers/Sphere.h" "src/Sphere.cpp" "src/headers/ShadowMap.h" "src/ShadowMap.cpp" "src/Skybox.cpp" "src/headers/PerlinNoiseGenerator.h" "src/PerlinNoiseGenerator.cpp")
+add_executable(MyProject ${SOURCES} "src/stb.cpp" "src/headers/Texture.h" "src/Texture.cpp" "src/headers/Window.h" "src/headers/Sphere.h" "src/Sphere.cpp" "src/headers/ShadowMap.h" "src/ShadowMap.cpp" "src/Skybox.cpp" "src/headers/PerlinNoiseGenerator.h" "src/PerlinNoiseGenerator.cpp" "src/headers/SimplexNoiseGenerator.h" "src/SimplexNoiseGenerator.cpp")
 
 
 # Link libraries

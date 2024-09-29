@@ -49,6 +49,7 @@ public:
 	void Diamond_step(int x, int y, int stepSize, float scale);
 	void Square_step(int x, int y, int stepSize, float scale);
 	void generateNoiseMap(int size, float baseFrequency, int octaves, float persistence, float maxNoiseAmplitude);
+	void generateWithPerlin();
 	void generateNoiseTexture();
 	void uploadNoiseTexture(Shader& shader);
 	float randomOffset(float range);	//get random value decreasing with reach iteration

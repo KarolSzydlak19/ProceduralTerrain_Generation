@@ -5,6 +5,8 @@
 int Window::display(void)
 {
     //terrain properties
+    int customSeed = 0;
+    bool useCustomSeed = false;
     float roughness = 15000.0f;
     float flatteningScale = 2.15f;
     int width = 1920;
@@ -12,6 +14,7 @@ int Window::display(void)
     const int allowedSizes[] = { 257, 513, 1025, 2049, 4097 };
     int currentMeshSizeIndex = 2;
     const char* allowedSizesLabels[] = {"257", "513", "1025", "2049", "4097"};
+    bool enableTriangles = false;
 
     //Camera properties
     float nearplane = 0.1f;
@@ -38,6 +41,14 @@ int Window::display(void)
     bool useRockTex = true;
     bool useSnowTex = true;
     bool useSoilTex = true;
+
+    //Skyboxes 
+    const char* skyTextures[] = { "Default", "Clody sky", "Sunset", "Night"};
+    int currentSkyIndex = 0;
+    const char* skyboxes[] = { "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\sunnySkybox.tga",
+    "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\grayCloudsSky.tga",
+    "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\yelSkybox.tga",
+    "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\nightSky.tga" };
 
     //Lighting
     bool enableShadows = true;
@@ -89,6 +100,7 @@ int Window::display(void)
     Map terrain(mapSize, roughness, flatteningScale, maxTextureNoise, map, mapBuilder, noiseGen);
     std::cout << "Main Terrain gen starting" << std::endl;
     terrain.generate();
+    //terrain.generateWithPerlin();
     minTexHeight = terrain.getMinY();
     maxTexHeight = terrain.getMaxY();
     Sphere sunSphere(500.0f, 100, 100); // SUN
@@ -139,7 +151,7 @@ int Window::display(void)
     std::cout << "Stone texture ID: " << stoneTex.ID << std::endl;
 
 
-    glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 0.80f);
+    glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 sunDirection = glm::normalize(glm::vec3(0.2f, 0.6f, 0.1f));  // Direction vector for sunlight
     // SHADOWS
     ShadowMap shadowMap(2048, 2048);
@@ -175,9 +187,10 @@ int Window::display(void)
         shadowMap.Unbind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shader.Activate();
-        if (!io.WantCaptureMouse) {
+       /* if (!io.WantCaptureMouse) {
             camera.InputHandler(window);
-        }
+        }*/
+        camera.InputHandler(window, !io.WantCaptureMouse);
         // Updates and exports the camera matrix to the Vertex Shader
         camera.Matrix(shader, "camMatrix");
         camera.updateMatrix(fov, nearplane, farplane);
@@ -260,9 +273,27 @@ int Window::display(void)
             std::cerr << "OpenGL Error: " << error << std::endl;
         }
         //terrain.drawNormals();
+        if (enableTriangles) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }
+        else {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+        if (useCustomSeed) {
+            srand(customSeed);
+        }
+        else {
+            srand(time(NULL));
+        }
         
 
         ImGui::Begin("Terrain properties");
+        ImGui::Text("Use custom seed");
+        ImGui::SameLine();
+        ImGui::Checkbox("##seedChechbox", &useCustomSeed);
+        ImGui::Text("Custom seed");
+        ImGui::SameLine();
+        ImGui::InputInt("##customSeed", &customSeed);
         ImGui::Text("Elevation");
         ImGui::SameLine();
         ImGui::InputFloat("##elevation", &roughness, 0.0f, 0.0f, "%.2f");
@@ -277,7 +308,9 @@ int Window::display(void)
         ImGui::Text("Mesh offset");
         ImGui::SameLine();
         ImGui::InputFloat("#Distance between mesh points", &meshPointDistance, 0.0f, 0.0f, "%.2f");
-        
+        ImGui::Text("Show mesh");
+        ImGui::SameLine();
+        ImGui::Checkbox("##showmeshCheckbox", &enableTriangles);
         if (ImGui::Button("Generate")) {
             terrain.cleanUpObjects();
             bool genFinished = false;
@@ -313,6 +346,12 @@ int Window::display(void)
         ImGui::End();
 
         ImGui::Begin("Textures");
+        ImGui::Text("Skybox:");
+        ImGui::SameLine();
+        if (ImGui::Combo("##SkyboxChoice", &currentSkyIndex, skyTextures, IM_ARRAYSIZE(skyTextures))) {
+            //mapSize = allowedSizes[currentMeshSizeIndex];
+            skybox.initTexture(skyboxes[currentSkyIndex]);
+        }
         //Soil
         ImGui::Text("Soil texture");
         ImGui::SameLine();

@@ -31,7 +31,7 @@ void Camera::Matrix(Shader& shader, const char* uniform)
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 }
 
-void Camera::InputHandler(GLFWwindow* window)
+void Camera::InputHandler(GLFWwindow* window, bool mouseCapture)
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		position += speed * orientation;
@@ -54,41 +54,42 @@ void Camera::InputHandler(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
 		speed *= 2;
 	}
-
+	
 	// mouse inputs
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && mouseCapture)
 	{
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		if (mouseCapture) {
+			if (firstClick)
+			{
+				glfwSetCursorPos(window, (windowWidth / 2), (windowHeight / 2));
+				firstClick = false;
+			}
 
-		if (firstClick)
-		{
+			double mouseX;
+			double mouseY;
+			glfwGetCursorPos(window, &mouseX, &mouseY);
+
+			float rotX = sensitivity * (float)(mouseY - (windowHeight / 2)) / windowHeight;
+			float rotY = sensitivity * (float)(mouseX - (windowWidth / 2)) / windowWidth;
+
+			// Vertical change
+			glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
+
+			// Prevents "barrel roll"
+			if (abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
+			{
+				orientation = newOrientation;
+			}
+
+			// Horizontal change
+			orientation = glm::rotate(orientation, glm::radians(-rotY), up);
+
+			// Sets mouse coursor to the middle of the screen
 			glfwSetCursorPos(window, (windowWidth / 2), (windowHeight / 2));
-			firstClick = false;
 		}
-
-		double mouseX;
-		double mouseY;
-		glfwGetCursorPos(window, &mouseX, &mouseY);
-
-		float rotX = sensitivity * (float)(mouseY - (windowHeight / 2)) / windowHeight;
-		float rotY = sensitivity * (float)(mouseX - (windowWidth / 2)) / windowWidth;
-
-		// Vertical change
-		glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
-
-		// Prevents "barrel roll"
-		if (abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
-		{
-			orientation = newOrientation;
-		}
-
-		// Horizontal change
-		orientation = glm::rotate(orientation, glm::radians(-rotY), up);
-
-		// Sets mouse coursor to the middle of the screen
-		glfwSetCursorPos(window, (windowWidth / 2), (windowHeight / 2));
 	}
-	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
+	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE && mouseCapture)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		firstClick = true;

@@ -55,16 +55,34 @@ void Map::searchEdgeValues() {
 }
 
 void Map::generateNoiseMap(int size, float baseFrequency, int octaves, float persistence, float maxNoiseAmplitude) {
-   /* std::cout << "Before gen" << std::endl;
+    // Resize the noiseMap to fit the desired size
     noiseMap.resize(size, std::vector<float>(size, 0.0f));
+
+    // Initialize the Perlin noise generator
+    PerlinNoiseGenerator noiseGen;
+
+    // Iterate through each point in the map
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
+            // Calculate the position in noise space using baseFrequency
             float x = i * baseFrequency;
-            float y = j * baseFrequency;
-            noiseMap[i][j] = glm::clamp(noiseGen.fractalNoise(x, y, octaves, persistence, baseFrequency, maxNoiseAmplitude), 0.0f, 1.0f);
+            float z = j * baseFrequency;
+
+            // Generate fractal noise for the current point
+            float noiseValue = noiseGen.fractalNoise(x, z, octaves, persistence, baseFrequency, maxNoiseAmplitude);
+
+            // Optionally, clamp the result to [0, 1], but apply amplitude scaling
+            noiseMap[i][j] = noiseValue * maxNoiseAmplitude;
+
+            // Set the height (y) for your terrain using the noise value
+            map[i][j].y = noiseMap[i][j];  // Adjust height using noise and amplitude scaling
         }
     }
-    std::cout << "After gen" << std::endl;*/
+}
+
+void Map::generateWithPerlin() {
+    generateNoiseMap(size, 0.05f, 6, 0.5f, roughness);  // Customize parameters as needed
+    //initAxes();
 }
 
 void Map::generateNoiseTexture() {

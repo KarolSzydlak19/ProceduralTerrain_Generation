@@ -19,7 +19,7 @@ float PerlinNoiseGenerator::grad(int hash, float x, float y) {
 }
 
 // Basic Perlin Noise function
-float PerlinNoiseGenerator::perlin(float x, float y) {
+float PerlinNoiseGenerator::noise(float x, float y) {
     int X = (int)floor(x) & 255;
     int Y = (int)floor(y) & 255;
 
@@ -29,13 +29,17 @@ float PerlinNoiseGenerator::perlin(float x, float y) {
     float u = fade(x);
     float v = fade(y);
 
-    // Hash coordinates of the 4 corners
-    int a = (X + Y) & 255;
-    int b = (X + 1 + Y) & 255;
+    // Hash coordinates of the 4 corners using the permutation vector
+    int aa = permutation[X] + Y;
+    int ab = permutation[X] + Y + 1;
+    int ba = permutation[X + 1] + Y;
+    int bb = permutation[X + 1] + Y + 1;
 
     // Blend results from the 4 corners
-    return lerp(v, lerp(u, grad(a, x, y), grad(b, x - 1, y)),
-        lerp(u, grad(a + 1, x, y - 1), grad(b + 1, x - 1, y - 1)));
+    return lerp(v,
+        lerp(u, grad(permutation[aa], x, y), grad(permutation[ba], x - 1, y)),
+        lerp(u, grad(permutation[ab], x, y - 1), grad(permutation[bb], x - 1, y - 1))
+    );
 }
 
 // Fractal Perlin Noise (with octaves)
@@ -45,7 +49,7 @@ float PerlinNoiseGenerator::fractalNoise(float x, float y, int octaves, float pe
 
     for (int i = 0; i < octaves; i++) {
         // Calculate each octave of noise and sum
-        total += perlin(x * frequency, y * frequency) * amplitude;
+        total += noise(x * frequency, y * frequency) * amplitude;
         maxValue += amplitude;
 
         amplitude *= persistence; // Reduce amplitude for next octave

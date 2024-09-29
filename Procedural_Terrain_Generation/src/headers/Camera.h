@@ -32,7 +32,7 @@ public:
 
 	void updateMatrix(float FOVdeg, float nearPlane, float farPlane);
 
-	void InputHandler(GLFWwindow* window);
+	void InputHandler(GLFWwindow* window, bool mouseCapture);
 
 	glm::mat4 getProjectionMatrix(float FOVdeg, float nearPlane, float farPlane);
 

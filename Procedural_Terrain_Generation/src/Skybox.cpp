@@ -82,7 +82,7 @@ void Skybox::initTexture(const char* image) {
     if (data) {
         int faceWidth = textureWidth / 4;
         int faceHeight = textureHeight / 3;
-        stbi_set_flip_vertically_on_load(false);
+        stbi_set_flip_vertically_on_load(true);
         GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
 
         // Right face
