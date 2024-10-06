@@ -11,10 +11,12 @@
 #include <thread>
 #include <functional>
 #include <vector>
+#include <thread>
 #include "Map.h"
 #include "Sphere.h"
 #include "ShadowMap.h"
 #include "Skybox.h"
+#include "InputMode.cpp"
 #include <Camera.h>
 #include <filesystem>
 #ifndef WINDOW_H

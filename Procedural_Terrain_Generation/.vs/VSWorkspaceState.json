@@ -32,5 +32,6 @@
     "\\src\\Shaders",
     "\\src\\Textures"
   ],
+  "SelectedNode": "\\src\\PerlinNoiseGenerator.cpp",
   "PreviewInSolutionExplorer": false
 }

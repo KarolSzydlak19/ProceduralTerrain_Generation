@@ -14,6 +14,7 @@ Map::Map(int size, float roughness, float flatteningScale, float maxTextureNoise
     mapEBO = nullptr;
     mapVBO = nullptr;
     maxY = minY = 0;
+    mapPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 float Map::getMinY() {
@@ -58,9 +59,6 @@ void Map::generateNoiseMap(int size, float baseFrequency, int octaves, float per
     // Resize the noiseMap to fit the desired size
     noiseMap.resize(size, std::vector<float>(size, 0.0f));
 
-    // Initialize the Perlin noise generator
-    PerlinNoiseGenerator noiseGen;
-
     // Iterate through each point in the map
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
@@ -69,8 +67,9 @@ void Map::generateNoiseMap(int size, float baseFrequency, int octaves, float per
             float z = j * baseFrequency;
 
             // Generate fractal noise for the current point
+           // std::cout << "noise for " << i << " " << j << " started" << std::endl;
             float noiseValue = noiseGen.fractalNoise(x, z, octaves, persistence, baseFrequency, maxNoiseAmplitude);
-
+            //std::cout << "noise for " << i << " " << j << " calculated" << std::endl;
             // Optionally, clamp the result to [0, 1], but apply amplitude scaling
             noiseMap[i][j] = noiseValue * maxNoiseAmplitude;
 
@@ -80,8 +79,8 @@ void Map::generateNoiseMap(int size, float baseFrequency, int octaves, float per
     }
 }
 
-void Map::generateWithPerlin() {
-    generateNoiseMap(size, 0.05f, 6, 0.5f, roughness);  // Customize parameters as needed
+void Map::generateWithPerlin(float baseFrequency, float octaves, float persistance, float maxAmplitude) {
+    generateNoiseMap(size, baseFrequency, octaves, persistance, maxAmplitude);  // Customize parameters as needed
     //initAxes();
 }
 
@@ -420,6 +419,22 @@ void Map::draw() {
 
 }
 
+void Map::exportToOBJ(std::string fileName) {
+    int indexCount = (size - 1) * (size - 1) * 6;
+    exporter.exportTerrainToOBJ(fileName, vertices, size * size, normals, indices, indexCount);
+}
+
+std::string Map::showSaveFileDialog(std::string fileName) {
+    return exporter.showSaveFileDialog(fileName);
+}
+
+float Map::getExportingProgress() {
+    return exporter.getExportingProgress();
+}
+
+std::string Map::getExportState() {
+    return exporter.getExportingState();
+}
 void Map::print() {
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {

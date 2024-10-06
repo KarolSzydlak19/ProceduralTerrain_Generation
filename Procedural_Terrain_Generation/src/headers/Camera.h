@@ -16,6 +16,7 @@ public:
 	glm::vec3 orientation = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::mat4 cameraMatrix = glm::mat4(1.0f);
+	bool &rotateObject;
 
 	bool firstClick = true;
 
@@ -26,7 +27,7 @@ public:
 	float speed = 0.1f;
 	float sensitivity = 100.0f;
 
-	Camera(int windowWidth, int windowHeight, glm::vec3 position);
+	Camera(int windowWidth, int windowHeight, glm::vec3 position, bool &rotateObject);
 
 	void Matrix(Shader& shader, const char* uniform);
 

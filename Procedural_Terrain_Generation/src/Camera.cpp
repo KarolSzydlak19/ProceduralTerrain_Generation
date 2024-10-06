@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-Camera::Camera(int width, int height, glm::vec3 cameraPos) {
+Camera::Camera(int width, int height, glm::vec3 cameraPos, bool &rotateObject): rotateObject(rotateObject) {
 	position = cameraPos;
 	windowWidth = width;
 	windowHeight = height;
@@ -33,65 +33,98 @@ void Camera::Matrix(Shader& shader, const char* uniform)
 
 void Camera::InputHandler(GLFWwindow* window, bool mouseCapture)
 {
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		position += speed * orientation;
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		position += speed * -glm::normalize(glm::cross(orientation, up));
-	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		position += speed * -orientation;
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		position += speed * glm::normalize(glm::cross(orientation, up));
-	}
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		position += speed * up;
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-		position += speed * -up;
-	}
-	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-		speed *= 2;
-	}
-	
-	// mouse inputs
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && mouseCapture)
-	{
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		if (mouseCapture) {
-			if (firstClick)
-			{
-				glfwSetCursorPos(window, (windowWidth / 2), (windowHeight / 2));
-				firstClick = false;
-			}
+	if (!rotateObject) {
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+			position += speed * orientation;
+		}
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+			position += speed * -glm::normalize(glm::cross(orientation, up));
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+			position += speed * -orientation;
+		}
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+			position += speed * glm::normalize(glm::cross(orientation, up));
+		}
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+			position += speed * up;
+		}
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+			position += speed * -up;
+		}
+		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+			speed *= 2;
+		}
 
-			double mouseX;
-			double mouseY;
+		// mouse inputs
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && mouseCapture)
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			if (mouseCapture) {
+				if (firstClick)
+				{
+					glfwSetCursorPos(window, (windowWidth / 2), (windowHeight / 2));
+					firstClick = false;
+				}
+
+				double mouseX;
+				double mouseY;
+				glfwGetCursorPos(window, &mouseX, &mouseY);
+
+				float rotX = sensitivity * (float)(mouseY - (windowHeight / 2)) / windowHeight;
+				float rotY = sensitivity * (float)(mouseX - (windowWidth / 2)) / windowWidth;
+
+				// Vertical change
+				glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
+
+				// Prevents "barrel roll"
+				if (abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
+				{
+					orientation = newOrientation;
+				}
+
+				// Horizontal change
+				orientation = glm::rotate(orientation, glm::radians(-rotY), up);
+
+				// Sets mouse coursor to the middle of the screen
+				glfwSetCursorPos(window, (windowWidth / 2), (windowHeight / 2));
+			}
+		}
+		else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE && mouseCapture)
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			firstClick = true;
+		}
+	}
+	else {
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+			//objectPosition += speed * glm::vec3(0.0f, 0.0f, -1.0f); // Move object forward
+		}
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+			//objectPosition += speed * glm::vec3(-1.0f, 0.0f, 0.0f); // Move object left
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+			//objectPosition += speed * glm::vec3(0.0f, 0.0f, 1.0f);  // Move object backward
+		}
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+			//objectPosition += speed * glm::vec3(1.0f, 0.0f, 0.0f);  // Move object right
+		}
+
+		// Mouse movement for object rotation
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && mouseCapture) {
+			// Use mouse to rotate the object instead of the camera
+			double mouseX, mouseY;
 			glfwGetCursorPos(window, &mouseX, &mouseY);
 
 			float rotX = sensitivity * (float)(mouseY - (windowHeight / 2)) / windowHeight;
 			float rotY = sensitivity * (float)(mouseX - (windowWidth / 2)) / windowWidth;
 
-			// Vertical change
-			glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
+			//objectRotation.x += rotX;  // Rotate object on X-axis
+			//objectRotation.y += rotY;  // Rotate object on Y-axis
 
-			// Prevents "barrel roll"
-			if (abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
-			{
-				orientation = newOrientation;
-			}
-
-			// Horizontal change
-			orientation = glm::rotate(orientation, glm::radians(-rotY), up);
-
-			// Sets mouse coursor to the middle of the screen
+			// Reset cursor position
 			glfwSetCursorPos(window, (windowWidth / 2), (windowHeight / 2));
 		}
 	}
-	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE && mouseCapture)
-	{
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		firstClick = true;
-	}
+	
 }

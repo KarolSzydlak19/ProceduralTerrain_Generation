@@ -15,6 +15,7 @@
 #include "MapBuilder.h"
 #include "PerlinNoiseGenerator.h"
 #include <glm/gtc/noise.hpp>
+#include "TerrainExporter.h"
 class MapBuilder;
 class Map {
 private:
@@ -22,6 +23,7 @@ private:
 	VAO* mapVAO;
 	VBO* mapVBO;
 	std::vector<std::vector<glm::vec3>>& map;
+	glm::vec3 mapPosition;
 	float roughness;
 	float flatteningScale;
 	int size;
@@ -38,9 +40,12 @@ private:
 	float maxTextureNoise;
 	float minY;
 	float maxY;
+	TerrainExporter exporter;
 public:
 	float getMinY();
 	float getMaxY();
+	float getExportingProgress();
+	std::string getExportState();
 	void searchEdgeValues();
 	void setFlattening(float val);
 	void setTexNoise(float val);
@@ -48,8 +53,9 @@ public:
 	void setSize(int size);
 	void Diamond_step(int x, int y, int stepSize, float scale);
 	void Square_step(int x, int y, int stepSize, float scale);
+	void translateMap();
 	void generateNoiseMap(int size, float baseFrequency, int octaves, float persistence, float maxNoiseAmplitude);
-	void generateWithPerlin();
+	void generateWithPerlin(float baseFrequency, float octaves, float persistance, float maxAmplitude);
 	void generateNoiseTexture();
 	void uploadNoiseTexture(Shader& shader);
 	float randomOffset(float range);	//get random value decreasing with reach iteration
@@ -68,5 +74,7 @@ public:
 	void generateNormalLines();
 	void initNormalObjects();
 	void drawNormals();
+	void exportToOBJ(std::string fileName);
+	std::string showSaveFileDialog(std::string fileName);
 	Map(int size, float roughness, float flatteningScale, float maxTextureNoise, std::vector<std::vector<glm::vec3>>& map, MapBuilder& mapBuilder, PerlinNoiseGenerator noiseGen);
 };

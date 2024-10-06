@@ -20,6 +20,8 @@ int Window::display(void)
     float nearplane = 0.1f;
     float farplane = 2000000.0f;
     float fov = 120.0f;
+    InputMode inputMode = InputMode::CameraControl;
+    bool rotateObject = false;
 
     //Texture properties
     float maxTextureNoise = 15000.0f;
@@ -42,6 +44,14 @@ int Window::display(void)
     bool useSnowTex = true;
     bool useSoilTex = true;
 
+    // Export
+    bool isExporting = false;
+    bool firstExport = false;
+    bool savedToOBJ = false;
+    float progress = 0.0f;
+    float exportProgress = 0.0f;
+    std::string exportState = "";
+    std::string saveFilePath = "";
     //Skyboxes 
     const char* skyTextures[] = { "Default", "Clody sky", "Sunset", "Night"};
     int currentSkyIndex = 0;
@@ -54,7 +64,7 @@ int Window::display(void)
     bool enableShadows = true;
 
     unsigned int samples = 8;
-    float meshPointDistance = 100.0f;
+    float meshPointDistance = 2000.0f;
     GLFWwindow* window;
     /* Initialize the library */
     if (!glfwInit()) {
@@ -99,7 +109,9 @@ int Window::display(void)
     PerlinNoiseGenerator noiseGen;
     Map terrain(mapSize, roughness, flatteningScale, maxTextureNoise, map, mapBuilder, noiseGen);
     std::cout << "Main Terrain gen starting" << std::endl;
-    terrain.generate();
+    terrain.generateWithPerlin(0.03f, 6, 0.5f, 50000000.0f);
+    terrain.searchEdgeValues();
+    //terrain.generate();
     //terrain.generateWithPerlin();
     minTexHeight = terrain.getMinY();
     maxTexHeight = terrain.getMaxY();
@@ -108,7 +120,7 @@ int Window::display(void)
     glm::vec3 sunScale = glm::vec3(20.0f); // Scale it to make it visible
     //sunSphere.translate(sunPosition);
 
-    Camera camera(1920, 1080, { 0.0f, 20.0f, 0.0f });
+    Camera camera(1920, 1080, { 0.0f, 20.0f, 0.0f }, rotateObject);
     Shader sunShader("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Shaders\\sun.vert", "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Shaders\\sun.frag");
     Shader shader("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Shaders\\default.vert", "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src/Shaders\\default.frag");
    // Texture mapTexture("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\rockyTex.tga", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
@@ -172,6 +184,7 @@ int Window::display(void)
     Skybox skybox(skyboxShader);
     skybox.initTexture("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\sunnySkybox.tga");
     std::cout << "IN WINDOW --> " << skyboxShader.ID << std::endl;
+    //terrain.exportToOBJ();
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color and depth buffers
@@ -342,7 +355,11 @@ int Window::display(void)
         ImGui::Text("Farplane");
         ImGui::SameLine();
         ImGui::InputFloat("##inputFarplane", &farplane);
+        ImGui::Text("Rotate map");
+        ImGui::SameLine();
+        ImGui::Checkbox("##rotateMap", &rotateObject);
         //ImGui::SliderFloat("##farplane", &farplane, 1.0f, 200000000.0f, "%.2f");
+
         ImGui::End();
 
         ImGui::Begin("Textures");
@@ -407,6 +424,49 @@ int Window::display(void)
         sunDirection = glm::normalize(sunDirection);  // Normalize direction
         ImGui::Text("Light Color");
         ImGui::ColorEdit3("##lightColor", glm::value_ptr(lightColor));
+        ImGui::End();
+        // Exportinh
+        ImGui::Begin("Export terrain");
+        if (ImGui::Button("Export to OBJ")) {
+            if (!isExporting) {
+                saveFilePath = terrain.showSaveFileDialog("terrain.obj");
+                if (!saveFilePath.empty()) {
+                    isExporting = true;
+                    std::thread exportThread([&, saveFilePath]() {
+                        terrain.exportToOBJ(saveFilePath);
+                        isExporting = false;
+                        savedToOBJ = true;
+                    });
+                    exportThread.detach();
+                }
+            }
+            else {
+                ImGui::SameLine();
+                ImGui::Text("Export already in progress");
+            }
+        }
+        if (isExporting) {
+            exportProgress = terrain.getExportingProgress();
+            exportState = terrain.getExportState();
+            if (exportProgress > progress) {
+                progress += 0.0003f;
+            }
+            if (progress >= 1.0f) {
+                progress = 1.0f;
+            }
+            ImGui::Text(exportState.c_str());
+            ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f));
+        }
+        else {
+            progress = 0.0f;
+        }
+        if (savedToOBJ) {
+            ImGui::Text(("Saved to " + saveFilePath).c_str());
+            if (ImGui::Button("Dismiss")) {
+                savedToOBJ = false;
+            }
+
+        }
         ImGui::End();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

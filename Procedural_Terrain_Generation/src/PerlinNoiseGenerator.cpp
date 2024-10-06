@@ -1,5 +1,5 @@
 #include "PerlinNoiseGenerator.h"
-
+#include <iostream>
 // Function to fade the noise
 float PerlinNoiseGenerator::fade(float t) {
     return t * t * t * (t * (t * 6 - 15) + 10);
@@ -22,6 +22,7 @@ float PerlinNoiseGenerator::grad(int hash, float x, float y) {
 float PerlinNoiseGenerator::noise(float x, float y) {
     int X = (int)floor(x) & 255;
     int Y = (int)floor(y) & 255;
+    //std::cout << "X: " << X << " Y: " << Y << " permutationsize: " << permutation.size() << std::endl;
 
     x -= floor(x);
     y -= floor(y);
@@ -30,11 +31,11 @@ float PerlinNoiseGenerator::noise(float x, float y) {
     float v = fade(y);
 
     // Hash coordinates of the 4 corners using the permutation vector
-    int aa = permutation[X] + Y;
-    int ab = permutation[X] + Y + 1;
-    int ba = permutation[X + 1] + Y;
-    int bb = permutation[X + 1] + Y + 1;
-
+    int aa = permutation[(permutation[X] + Y) & 255];
+    int ab = permutation[(permutation[X] + (Y + 1)) & 255];
+    int ba = permutation[((permutation[(X + 1) & 255] & 255) + Y) & 255];
+    int bb = permutation[((permutation[(X + 1) & 255 ] & 255) + (Y + 1) ) & 255];
+    //std::cout << "aa: " << aa << " ab: " << ab << " ba: " << ba << " bb: " << bb << std::endl;
     // Blend results from the 4 corners
     return lerp(v,
         lerp(u, grad(permutation[aa], x, y), grad(permutation[ba], x - 1, y)),
