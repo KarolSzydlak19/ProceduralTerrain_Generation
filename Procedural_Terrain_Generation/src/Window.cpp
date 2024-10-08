@@ -15,9 +15,17 @@ int Window::display(void)
     int currentMeshSizeIndex = 2;
     const char* allowedSizesLabels[] = {"257", "513", "1025", "2049", "4097"};
     bool enableTriangles = false;
+    const char* generationTypeLabel[] = { "Diamond Square", "Perlin Noise" };
+    const int generationType[] = { 0, 1 };
+    int currentAlgorithm = 0;
+    //perlin
+    float baseFrequency = 0.07f;
+    int octaves = 6;
+    float persistance = 0.5f;
+    float noiseAmplitude = 10000.0f;
 
     //Camera properties
-    float nearplane = 0.1f;
+    float nearplane = 10.0f;
     float farplane = 2000000.0f;
     float fov = 120.0f;
     InputMode inputMode = InputMode::CameraControl;
@@ -27,10 +35,6 @@ int Window::display(void)
     float maxTextureNoise = 15000.0f;
     float minTexHeight = -100000.0f;
     float maxTexHeight = 100000.0f;
-   // float grassHeight = -100000.0f;
-    //float rockHeight = 300.0f;
-    //float snowHeight = 400.0f;
-    //float soilHeight = 200.0f;
     float snowMin = 400.0f;
     float snowMax = 500.0f;
     float rockMin = 300.0f;
@@ -55,16 +59,16 @@ int Window::display(void)
     //Skyboxes 
     const char* skyTextures[] = { "Default", "Clody sky", "Sunset", "Night"};
     int currentSkyIndex = 0;
-    const char* skyboxes[] = { "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\sunnySkybox.tga",
-    "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\grayCloudsSky.tga",
-    "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\yelSkybox.tga",
-    "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\nightSky.tga" };
+    const char* skyboxes[] = { "Textures\\sunnySkybox.tga",
+    "Textures\\grayCloudsSky.tga",
+    "Textures\\yelSkybox.tga",
+    "Textures\\nightSky.tga" };
 
     //Lighting
     bool enableShadows = true;
 
     unsigned int samples = 8;
-    float meshPointDistance = 2000.0f;
+    float meshPointDistance = 100.0f;
     GLFWwindow* window;
     /* Initialize the library */
     if (!glfwInit()) {
@@ -109,9 +113,9 @@ int Window::display(void)
     PerlinNoiseGenerator noiseGen;
     Map terrain(mapSize, roughness, flatteningScale, maxTextureNoise, map, mapBuilder, noiseGen);
     std::cout << "Main Terrain gen starting" << std::endl;
-    terrain.generateWithPerlin(0.03f, 6, 0.5f, 50000000.0f);
-    terrain.searchEdgeValues();
-    //terrain.generate();
+    //terrain.generateWithPerlin(0.03f, 6, 0.5f, 50000000.0f);
+    //terrain.searchEdgeValues();
+    terrain.generate();
     //terrain.generateWithPerlin();
     minTexHeight = terrain.getMinY();
     maxTexHeight = terrain.getMaxY();
@@ -120,7 +124,7 @@ int Window::display(void)
     glm::vec3 sunScale = glm::vec3(20.0f); // Scale it to make it visible
     //sunSphere.translate(sunPosition);
 
-    Camera camera(1920, 1080, { 0.0f, 20.0f, 0.0f }, rotateObject);
+    Camera camera(1920, 1080, { 0.0f, 200.0f, 0.0f }, rotateObject);
     Shader sunShader("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Shaders\\sun.vert", "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Shaders\\sun.frag");
     Shader shader("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Shaders\\default.vert", "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src/Shaders\\default.frag");
    // Texture mapTexture("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\rockyTex.tga", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
@@ -176,15 +180,23 @@ int Window::display(void)
     Shader shadowDis("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Shaders\\shadowMap.vert", "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src/Shaders\\shadowMap.frag");
     //glFrontFace(GL_CCW);
     glm::mat4 matrix = glm::mat4(1.0f);
-    glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 translation = glm::vec3(10000.0f, 10000.0f, 10000.0f);
     glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-    glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 scale = glm::vec3(10000.0f, 10000.0f, 10000.0f);
     // SKYBOX
     Shader skyboxShader("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Shaders\\skybox.vert", "C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src/Shaders\\skybox.frag");
     Skybox skybox(skyboxShader);
     skybox.initTexture("C:\\Users\\karol\\Praca_Inzynierska\\Procedural_Terrain_Generation\\Procedural_Terrain_Generation\\src\\Textures\\sunnySkybox.tga");
     std::cout << "IN WINDOW --> " << skyboxShader.ID << std::endl;
     //terrain.exportToOBJ();
+    glActiveTexture(GL_TEXTURE0);
+    snowTex.Bind();
+    glActiveTexture(GL_TEXTURE1);
+    grassTex.Bind();
+    glActiveTexture(GL_TEXTURE2);
+    soilTex.Bind();
+    glActiveTexture(GL_TEXTURE3);
+    stoneTex.Bind();
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color and depth buffers
@@ -238,23 +250,23 @@ int Window::display(void)
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
         //mapTexture.Bind();
-        glActiveTexture(GL_TEXTURE0);
+        /*glActiveTexture(GL_TEXTURE0);
         snowTex.Bind();
         glActiveTexture(GL_TEXTURE1);
         grassTex.Bind();
         glActiveTexture(GL_TEXTURE2);
         soilTex.Bind();
         glActiveTexture(GL_TEXTURE3);
-        stoneTex.Bind();
+        stoneTex.Bind();*/
         if (enableShadows) {
             shadowMap.BindForReading(GL_TEXTURE6);
             glActiveTexture(GL_TEXTURE6);
         }
         terrain.draw();
-        snowTex.Unbind();
+       /* snowTex.Unbind();
         stoneTex.Unbind();
         grassTex.Unbind();
-        soilTex.Unbind();
+        soilTex.Unbind();*/
         //mapTexture.Unbind();       
         sunShader.Activate();
         // Now draw the sphere
@@ -301,18 +313,40 @@ int Window::display(void)
         
 
         ImGui::Begin("Terrain properties");
+        ImGui::Text("Algorithm");
+        ImGui::SameLine();
+        if (ImGui::Combo("##algorithmSelection", &currentAlgorithm, generationTypeLabel, IM_ARRAYSIZE(generationType))) {
+            currentAlgorithm = generationType[currentAlgorithm];
+        }
         ImGui::Text("Use custom seed");
         ImGui::SameLine();
         ImGui::Checkbox("##seedChechbox", &useCustomSeed);
         ImGui::Text("Custom seed");
         ImGui::SameLine();
         ImGui::InputInt("##customSeed", &customSeed);
-        ImGui::Text("Elevation");
-        ImGui::SameLine();
-        ImGui::InputFloat("##elevation", &roughness, 0.0f, 0.0f, "%.2f");
-        ImGui::Text("Flattening scale");
-        ImGui::SameLine();
-        ImGui::InputFloat("##flatteningScale", &flatteningScale, 0.0f, 0.0f, "%.2f");
+        //only in diamond square
+        if (currentAlgorithm == 0) {
+            ImGui::Text("Elevation");
+            ImGui::SameLine();
+            ImGui::InputFloat("##elevation", &roughness, 0.0f, 0.0f, "%.2f");
+            ImGui::Text("Flattening scale");
+            ImGui::SameLine();
+            ImGui::InputFloat("##flatteningScale", &flatteningScale, 0.0f, 0.0f, "%.2f");
+        }
+        else if (currentAlgorithm == 1) {
+            ImGui::Text("Base frequency");
+            ImGui::SameLine();
+            ImGui::SliderFloat("##baseFreqSlider", &baseFrequency, 0.0f, 1.0f, "%.2f");
+            ImGui::Text("Octaves");
+            ImGui::SameLine();
+            ImGui::SliderInt("##octavesSlider", &octaves, 1.0f, 10.0f);
+            ImGui::Text("Persistance");
+            ImGui::SameLine();
+            ImGui::SliderFloat("##persistanceSlider", &persistance, 0.0f, 1.0f, "%.2f");
+            ImGui::Text("Amplitude");
+            ImGui::SameLine();
+            ImGui::InputFloat("##amplitudeInput", &noiseAmplitude, 0.0f, 0.0f, "%.2f");
+        }
         ImGui::Text("Mesh size");
         ImGui::SameLine();
         if (ImGui::Combo("##meshSizeSelection", &currentMeshSizeIndex, allowedSizesLabels, IM_ARRAYSIZE(allowedSizesLabels))) {
@@ -328,15 +362,21 @@ int Window::display(void)
             terrain.cleanUpObjects();
             bool genFinished = false;
             ImGui::Text("Generating terrain...");
-            terrain.setRoughness(roughness);
-            terrain.setFlattening(flatteningScale);
-            terrain.setSize(mapSize);
             map.resize(mapSize);
             for (int i = 0; i < mapSize; i++) {
                 map[i].resize(mapSize, { 0.0f, 0.0f, 0.0f });
             }
             mapBuilder.setOffset(meshPointDistance);
-            terrain.generate();
+            if (currentAlgorithm == 0) {
+                terrain.setRoughness(roughness);
+                terrain.setFlattening(flatteningScale);
+                terrain.setSize(mapSize);
+                terrain.generate();
+            }
+            else if (currentAlgorithm == 1) {
+                terrain.generateWithPerlin(baseFrequency, octaves, persistance, noiseAmplitude);
+            }
+            terrain.searchEdgeValues();
             terrain.initObjects();
             minTexHeight = terrain.getMinY();
             maxTexHeight = terrain.getMaxY();

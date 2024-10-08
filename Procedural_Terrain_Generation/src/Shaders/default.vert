@@ -22,7 +22,7 @@ out vec4 fragPosLight;
 
 void main()
 {
-    currPos = vec3(model * translation * rotation * scale * vec4(aPos, 1.0f));
+    currPos = vec3(translation * rotation * scale * model * vec4(aPos, 1.0f));
     gl_Position = camMatrix * vec4(aPos, 1.0);  // Apply camera matrix transformation
     texCoord = aTex;  // Pass texture coordinates to fragment shader
     tangent = aTangent;  // Pass tangent to fragment shader

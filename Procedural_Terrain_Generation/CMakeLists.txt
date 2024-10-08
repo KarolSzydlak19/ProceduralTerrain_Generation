@@ -9,6 +9,7 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Root directory
 # Set paths for external libraries
 set(EXTERNAL_DIR ${CMAKE_SOURCE_DIR}/External/libraries)
 set(GLFW_LIB_DIR ${EXTERNAL_DIR}/lib)
