@@ -1,5 +1,6 @@
 #include "TerrainExporter.h"
-
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 TerrainExporter::TerrainExporter() {
     exportingProgress = 0.0f;
     exportingState = "";
@@ -68,6 +69,7 @@ void TerrainExporter::exportTerrainToOBJ(const std::string& filename,
     objFile.close();
 }
 
+
 std::string TerrainExporter::showSaveFileDialog(const std::string& defaultFileName) {
     // Initialize the OPENFILENAME structure
     OPENFILENAME ofn;       // Common dialog box structure
@@ -97,4 +99,31 @@ std::string TerrainExporter::showSaveFileDialog(const std::string& defaultFileNa
         // If the user canceled or there was an error, return an empty string
         return std::string();
     }
+}
+
+void TerrainExporter::exportHeightmap(const std::vector<std::vector<glm::vec3>>& heightMap, const std::string& filename) {
+    int mapSize = heightMap.size();
+    std::vector<unsigned char> image(mapSize * mapSize);
+
+    // Find min and max height values to normalize the data
+    float minHeight = std::numeric_limits<float>::max();
+    float maxHeight = std::numeric_limits<float>::min();
+    for (int i = 0; i < mapSize; ++i) {
+        for (int j = 0; j < mapSize; ++j) {
+            float height = heightMap[i][j].y;
+            if (height < minHeight) minHeight = height;
+            if (height > maxHeight) maxHeight = height;
+        }
+    }
+
+    // Normalize and populate the image array
+    for (int i = 0; i < mapSize; i++) {
+        for (int j = 0; j < mapSize; j++) {
+            float normalizedHeight = (heightMap[i][j].y - minHeight) / (maxHeight - minHeight);
+            image[i * mapSize + j] = static_cast<unsigned char>(normalizedHeight * 255.0f);
+        }
+    }
+
+    // Save the image using stb_image_write
+    stbi_write_png(filename.c_str(), mapSize, mapSize, 1, image.data(), mapSize);
 }

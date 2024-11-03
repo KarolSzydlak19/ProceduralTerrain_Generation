@@ -1,0 +1,394 @@
+{
+	"archive" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "/machine:x64",
+				"role" : "flags"
+			}
+		]
+	},
+	"artifacts" : 
+	[
+		{
+			"path" : "glad.lib"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"add_compile_definitions",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 36,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 21,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 20,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 18,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 19,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 26,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 27,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 28,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 29,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 30,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 31,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 32,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 33,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 -MDd"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "MEASUREMENTS_DIR=\"C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/TimeResults/\""
+				},
+				{
+					"backtrace" : 3,
+					"define" : "P_DIR=\"C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/imgui.ini\""
+				},
+				{
+					"backtrace" : 4,
+					"define" : "SHADER_DIR=\"C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/src/Shaders\""
+				},
+				{
+					"backtrace" : 5,
+					"define" : "TEX_DIR=\"C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/src/Textures\""
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 6,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/libraries/include"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/libraries/include/glad"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/libraries/include/glfw"
+				},
+				{
+					"backtrace" : 9,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/libraries/include/glm"
+				},
+				{
+					"backtrace" : 10,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/libraries/include/KHR"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/libraries/include/stb"
+				},
+				{
+					"backtrace" : 12,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/src/headers"
+				},
+				{
+					"backtrace" : 13,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/imgui"
+				}
+			],
+			"language" : "C",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "MEASUREMENTS_DIR=\"C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/TimeResults/\""
+				},
+				{
+					"backtrace" : 3,
+					"define" : "P_DIR=\"C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/imgui.ini\""
+				},
+				{
+					"backtrace" : 4,
+					"define" : "SHADER_DIR=\"C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/src/Shaders\""
+				},
+				{
+					"backtrace" : 5,
+					"define" : "TEX_DIR=\"C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/src/Textures\""
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 6,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/libraries/include"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/libraries/include/glad"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/libraries/include/glfw"
+				},
+				{
+					"backtrace" : 9,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/libraries/include/glm"
+				},
+				{
+					"backtrace" : 10,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/libraries/include/KHR"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/libraries/include/stb"
+				},
+				{
+					"backtrace" : 12,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/src/headers"
+				},
+				{
+					"backtrace" : 13,
+					"path" : "C:/Users/karol/Praca_Inzynierska/Procedural_Terrain_Generation/Procedural_Terrain_Generation/External/imgui"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "17"
+			},
+			"sourceIndexes" : 
+			[
+				2,
+				4,
+				6,
+				7,
+				8,
+				10,
+				12,
+				13
+			]
+		}
+	],
+	"id" : "glad::@6890427a1f51a3e7e1df",
+	"name" : "glad",
+	"nameOnDisk" : "glad.lib",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				2,
+				4,
+				6,
+				7,
+				8,
+				10,
+				12,
+				13
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				1,
+				3,
+				5,
+				9,
+				11,
+				14
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "External/Libraries/include/glad/glad.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/headers/PerlinNoiseGenerator.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "src/PerlinNoiseGenerator.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/headers/SimplexNoiseGenerator.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "src/SimplexNoiseGenerator.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/headers/TerrainExporter.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "src/TerrainExporter.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "src/InputMode.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "src/GenerationTimer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/headers/TerrainImporter.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "src/TerrainImporter.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/headers/GuiWindow.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "src/GuiWindow.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "src/HydraulicErosion.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/headers/Drop.h",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

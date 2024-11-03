@@ -15,6 +15,12 @@ set(EXTERNAL_DIR ${CMAKE_SOURCE_DIR}/External/libraries)
 set(GLFW_LIB_DIR ${EXTERNAL_DIR}/lib)
 set(INCLUDE_DIR ${EXTERNAL_DIR}/include)
 set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/External/imgui)
+add_compile_definitions(SHADER_DIR="${CMAKE_SOURCE_DIR}/src/Shaders")
+add_compile_definitions(TEX_DIR="${CMAKE_SOURCE_DIR}/src/Textures")
+add_compile_definitions(P_DIR="${CMAKE_SOURCE_DIR}/imgui.ini")
+add_compile_definitions(MEASUREMENTS_DIR="${CMAKE_SOURCE_DIR}/TimeResults/")
+
+
 
 # Include directories
 include_directories(${INCLUDE_DIR})
@@ -27,7 +33,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/headers)
 include_directories(${IMGUI_DIR})
 
 # Add GLAD source file
-add_library(glad ${INCLUDE_DIR}/glad/glad.c "src/headers/PerlinNoiseGenerator.h" "src/PerlinNoiseGenerator.cpp" "src/headers/SimplexNoiseGenerator.h" "src/SimplexNoiseGenerator.cpp" "src/headers/TerrainExporter.h" "src/TerrainExporter.cpp" "src/InputMode.cpp")
+add_library(glad ${INCLUDE_DIR}/glad/glad.c "src/headers/PerlinNoiseGenerator.h" "src/PerlinNoiseGenerator.cpp" "src/headers/SimplexNoiseGenerator.h" "src/SimplexNoiseGenerator.cpp" "src/headers/TerrainExporter.h" "src/TerrainExporter.cpp" "src/InputMode.cpp" "src/GenerationTimer.cpp" "src/headers/TerrainImporter.h" "src/TerrainImporter.cpp" "src/headers/GuiWindow.h" "src/GuiWindow.cpp" "src/HydraulicErosion.cpp" "src/headers/Drop.h")
 
 # Source files
 set(SOURCES
@@ -54,7 +60,7 @@ set(SOURCES
 )
 
 # Add the executable
-add_executable(MyProject ${SOURCES} "src/stb.cpp" "src/headers/Texture.h" "src/Texture.cpp" "src/headers/Window.h" "src/headers/Sphere.h" "src/Sphere.cpp" "src/headers/ShadowMap.h" "src/ShadowMap.cpp" "src/Skybox.cpp" "src/headers/PerlinNoiseGenerator.h" "src/PerlinNoiseGenerator.cpp" "src/headers/SimplexNoiseGenerator.h" "src/SimplexNoiseGenerator.cpp" "src/headers/TerrainExporter.h" "src/TerrainExporter.cpp" "src/InputMode.cpp")
+add_executable(MyProject ${SOURCES} "src/stb.cpp" "src/headers/Texture.h" "src/Texture.cpp" "src/headers/Window.h" "src/headers/Sphere.h" "src/Sphere.cpp" "src/headers/ShadowMap.h" "src/ShadowMap.cpp" "src/Skybox.cpp" "src/headers/PerlinNoiseGenerator.h" "src/PerlinNoiseGenerator.cpp" "src/headers/SimplexNoiseGenerator.h" "src/SimplexNoiseGenerator.cpp" "src/headers/TerrainExporter.h" "src/TerrainExporter.cpp" "src/InputMode.cpp" "src/GenerationTimer.cpp" "src/headers/TerrainImporter.h" "src/TerrainImporter.cpp" "src/headers/GuiWindow.h" "src/GuiWindow.cpp" "src/HydraulicErosion.cpp" "src/headers/Drop.h")
 
 
 # Link libraries

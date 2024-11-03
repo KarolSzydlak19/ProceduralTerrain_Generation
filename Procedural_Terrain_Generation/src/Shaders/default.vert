@@ -6,11 +6,8 @@ layout(location = 2) in vec3 aTangent;  // Tangent vector
 layout(location = 3) in vec3 aNormal;   // Normal vector
 
 uniform mat4 camMatrix;  // Camera transformation matrix
-uniform mat4 lightProjection;
-uniform mat4 model;
-uniform mat4 translation;
-uniform mat4 rotation;
-uniform mat4 scale;
+uniform mat4 model;      // Model matrix combining translation, rotation, and scaling
+uniform mat4 lightProjection;  // Projection matrix for shadow mapping
 
 out vec3 currPos;
 out vec2 texCoord;   // Pass texture coordinates to fragment shader
@@ -22,12 +19,22 @@ out vec4 fragPosLight;
 
 void main()
 {
-    currPos = vec3(translation * rotation * scale * model * vec4(aPos, 1.0f));
-    gl_Position = camMatrix * vec4(aPos, 1.0);  // Apply camera matrix transformation
-    texCoord = aTex;  // Pass texture coordinates to fragment shader
-    tangent = aTangent;  // Pass tangent to fragment shader
-    normal = aNormal;  // Pass normal to fragment shader
-    height = aPos.y;  // Store the height of the vertex (y-coordinate)
-    fragPos = aPos;
-    fragPosLight = lightProjection * vec4(currPos, 1.0f);
+    // Apply model transformation to vertex position
+    vec4 worldPos = model * vec4(aPos, 1.0f);
+    
+    // Pass transformed position to the fragment shader
+    currPos = worldPos.xyz;
+    fragPos = worldPos.xyz;  // For lighting calculations
+
+    // Apply camera transformation and projection to calculate final position
+    gl_Position = camMatrix * worldPos;
+
+    // Pass additional data to the fragment shader
+    texCoord = aTex;  // Texture coordinates
+    tangent = aTangent;  // Tangent
+    normal = mat3(model) * aNormal;  // Transform the normal by the model matrix (no translation)
+    height = aPos.y;  // The height of the vertex for custom shaders/effects
+    
+    // Calculate position in light's projection space for shadow mapping
+    fragPosLight = lightProjection * worldPos;
 }

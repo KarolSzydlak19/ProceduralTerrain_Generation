@@ -45,7 +45,10 @@ public:
 	float getMinY();
 	float getMaxY();
 	float getExportingProgress();
+	int getSize();
+	void resizeMap();
 	std::string getExportState();
+	void exportToHeightmap(const std::vector<std::vector<glm::vec3>>& heightMap, const std::string& filename);
 	void searchEdgeValues();
 	void setFlattening(float val);
 	void setTexNoise(float val);

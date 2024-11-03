@@ -17,6 +17,8 @@
 #include "ShadowMap.h"
 #include "Skybox.h"
 #include "InputMode.cpp"
+#include "GenerationTimer.h"
+#include "HydraulicErosion.h"
 #include <Camera.h>
 #include <filesystem>
 #ifndef WINDOW_H

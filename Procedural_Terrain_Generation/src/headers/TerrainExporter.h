@@ -9,6 +9,8 @@
 #include <glad/glad.h>
 #include <commdlg.h>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 class TerrainExporter {
 private:
@@ -25,5 +27,6 @@ public:
         const GLuint* indices,
         int indexCount);
     std::string showSaveFileDialog(const std::string& defaultFileName);
+    void exportHeightmap(const std::vector<std::vector<glm::vec3>>& heightMap, const std::string& filename);
 };
 #endif

@@ -24,14 +24,14 @@
   "ExpandedNodes": [
     "",
     "\\External",
-    "\\External\\imgui",
-    "\\out",
-    "\\out\\build",
+    "\\External\\Libraries",
+    "\\External\\Libraries\\include",
+    "\\External\\Libraries\\include\\stb",
     "\\src",
     "\\src\\headers",
     "\\src\\Shaders",
-    "\\src\\Textures"
+    "\\src\\Textures",
+    "\\TimeResults"
   ],
-  "SelectedNode": "\\src\\Window.cpp",
   "PreviewInSolutionExplorer": false
 }

@@ -25,6 +25,10 @@ float Map::getMaxY() {
     return maxY;
 }
 
+int Map::getSize() {
+    return size;
+}
+
 void Map::setRoughness(float val) {
     roughness = val;
 }
@@ -39,6 +43,12 @@ void Map::setSize(int mapSize) {
 
 void Map::setTexNoise(float val) {
     maxTextureNoise = val;
+}
+
+void Map::resizeMap() {
+    for (int i = 0; i < size; i++) {
+        map[i].resize(size, { 0.0f, 0.0f, 0.0f });
+    }
 }
 
 void Map::searchEdgeValues() {
@@ -422,6 +432,10 @@ void Map::draw() {
 void Map::exportToOBJ(std::string fileName) {
     int indexCount = (size - 1) * (size - 1) * 6;
     exporter.exportTerrainToOBJ(fileName, vertices, size * size, normals, indices, indexCount);
+}
+
+void Map::exportToHeightmap(const std::vector<std::vector<glm::vec3>>& heightMap, const std::string& filename) {
+    exporter.exportHeightmap(heightMap, filename);
 }
 
 std::string Map::showSaveFileDialog(std::string fileName) {
