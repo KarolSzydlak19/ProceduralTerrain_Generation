@@ -67,7 +67,11 @@ void Map::searchEdgeValues() {
 
 void Map::generateNoiseMap(int size, float baseFrequency, int octaves, float persistence, float maxNoiseAmplitude) {
     // Resize the noiseMap to fit the desired size
+   // std::cout << "size" << size << std::endl;
     noiseMap.resize(size, std::vector<float>(size, 0.0f));
+    for (auto& row : noiseMap) {
+        row.resize(size, 0.0f);
+    }
 
     // Iterate through each point in the map
     for (int i = 0; i < size; i++) {
@@ -81,43 +85,22 @@ void Map::generateNoiseMap(int size, float baseFrequency, int octaves, float per
             float noiseValue = noiseGen.fractalNoise(x, z, octaves, persistence, baseFrequency, maxNoiseAmplitude);
             //std::cout << "noise for " << i << " " << j << " calculated" << std::endl;
             // Optionally, clamp the result to [0, 1], but apply amplitude scaling
+            //std::cout << "Before " << i << " " << j << "\n";
             noiseMap[i][j] = noiseValue * maxNoiseAmplitude;
-
+            //std::cout << "After assign\n";
             // Set the height (y) for your terrain using the noise value
+        
             map[i][j].y = noiseMap[i][j];  // Adjust height using noise and amplitude scaling
+            //std::cout << "After map assign\n";
         }
     }
 }
 
 void Map::generateWithPerlin(float baseFrequency, float octaves, float persistance, float maxAmplitude) {
-    generateNoiseMap(size, baseFrequency, octaves, persistance, maxAmplitude);  // Customize parameters as needed
-    //initAxes();
-}
-
-void Map::generateNoiseTexture() {
-   /* std::cout << "Before tex gen" << std::endl;
-    std::vector<float> flatNoiseMap(size * size);
-    std::cout << "after tex gen" << std::endl;
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
-            flatNoiseMap[i * size + j] = noiseMap[i][j];
-        }
-    }
-    std::cout << "after tex gen" << std::endl;
-    glGenTextures(1, &noiseTexture);
-    glBindTexture(GL_TEXTURE_2D, noiseTexture);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, size, size, 0, GL_RED, GL_FLOAT, flatNoiseMap.data());
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    std::cout << "after tex gen" << std::endl;*/
+    generateNoiseMap(size, baseFrequency, octaves, persistance, maxAmplitude); 
 }
 
 void Map::uploadNoiseTexture(Shader& shader) {
-    //std::cout << "NOOOOOOOOOOOIIIIIIIIIIIIIIIIIISSSSSSSSSSEEEEEEEEEEEEEEEEEEE " << shader.ID << noiseTexture << std::endl;
     glActiveTexture(GL_TEXTURE1);  
     glBindTexture(GL_TEXTURE_2D, noiseTexture);  
     shader.Activate();
@@ -136,8 +119,6 @@ void Map::Square_step(int x, int y, int halfStep, float scale) {
 }
 
 void Map::generate() {
-    //print();
-    std::cout << size << std::endl;
     int stepSize = size - 1;
     stepSize /= 2;
     float scale = roughness;
@@ -155,13 +136,10 @@ void Map::generate() {
                 mapBuilder.Square_step(x, y, halfStep, scale, size);
             }
         }
-
         stepSize /= 2;
         scale /= flatteningScale;
     }
     searchEdgeValues();
-    //std::cout << "AFTER" << std::endl;
-    //print();
 }
 
 void Map::initAxes() {

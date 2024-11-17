@@ -9,7 +9,6 @@ bool GenerationTimer::measureDiamondSquare(int testsNumber) {
 	LARGE_INTEGER startTime, endTime, diffTime, frequency;
 	QueryPerformanceFrequency(&frequency);
 	for (int i = 0; i < testsNumber; i++) {
-		//terrain.resizeMap();
 		QueryPerformanceCounter(&startTime);
 		terrain.generate();
 		QueryPerformanceCounter(&endTime);
@@ -25,7 +24,7 @@ bool GenerationTimer::measurePerlin(int testsNumber, float baseFrequancy, int oc
 	LARGE_INTEGER startTime, endTime, diffTime, frequency;
 	QueryPerformanceFrequency(&frequency);
 	for (int i = 0; i < testsNumber; i++) {
-		//terrain.resizeMap();
+		std::cout << i << std::endl;
 		QueryPerformanceCounter(&startTime);
 		terrain.generateWithPerlin(baseFrequancy, octaves, persistance, amplitude);
 		QueryPerformanceCounter(&endTime);

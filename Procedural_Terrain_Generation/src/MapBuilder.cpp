@@ -29,47 +29,45 @@ void MapBuilder::Diamond_step(int x, int y, int stepSize, float scale, int size)
     int count = 0;
 
     avg += map[x][y].y;
-    count++;
-
-    if (x + stepSize < size) {
-        avg += map[x + stepSize][y].y;
-        count++;
-    }
-    if (y + stepSize < size) {
-        avg += map[x][y + stepSize].y;
-        count++;
-    }
-    if (x + stepSize < size && y + stepSize < size) {
-        avg += map[x + stepSize][y + stepSize].y;
-        count++;
-    }
-
-    avg = avg / count;
+    avg += map[x + stepSize][y].y;
+    avg += map[x][y + stepSize].y;
+    avg += map[x + stepSize][y + stepSize].y;
+       
+    avg = avg / 4;
     map[x + halfStep][y + halfStep].y = avg + randomOffset(scale);
 }
 
 void MapBuilder::Square_step(int x, int y, int halfStep, float scale, int size) {
     float avg = 0.0f;
-    int count = 0;
-
     if (y >= halfStep) {
         avg += map[x][y - halfStep].y;
-        count++;
     }
-    if (y + halfStep < size) {
+    else {
         avg += map[x][y + halfStep].y;
-        count++;
-    }
-    if (x >= halfStep) {
-        avg += map[x - halfStep][y].y;
-        count++;
-    }
-    if (x + halfStep < size) {
-        avg += map[x + halfStep][y].y;
-        count++;
     }
 
-    map[x][y].y = avg / count + randomOffset(scale);
+    if (y + halfStep < size) {
+        avg += map[x][y + halfStep].y;
+    }
+    else {
+        avg += map[x][y - halfStep].y;
+    }
+
+    if (x >= halfStep) {
+        avg += map[x - halfStep][y].y;
+    }
+    else {
+        avg += map[x + halfStep][y].y;
+    }
+
+    if (x + halfStep < size) {
+        avg += map[x + halfStep][y].y;
+    }
+    else {
+        avg += map[x - halfStep][y].y;
+    }
+
+    map[x][y].y = avg / 4 + randomOffset(scale);
 }
 
 void MapBuilder::initAxes(int size) {
@@ -88,7 +86,6 @@ void MapBuilder::initAxes(int size) {
             map[j][i].z = y;
         }
     }
-    std::cout << "Init axes" << std::endl;
 }
 
 void MapBuilder::generateVertices(GLfloat* vertices, int size) {

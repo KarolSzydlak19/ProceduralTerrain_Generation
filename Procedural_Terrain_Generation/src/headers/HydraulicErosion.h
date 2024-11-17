@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <iostream>
 #include <random>
+#include <cmath>
 #include "Drop.h"
 
 class HydraulicErosion {
@@ -32,7 +33,7 @@ public:
 	void setMapSize(int x);
 	int randomInt(int range);
 	HydraulicErosion(std::vector<std::vector<glm::vec3>>& heightMap);
-	void Erode(int iterations, float volume, float dt, float density, float friction);
+	void Erode(int iterations, float volume, float dt, float density, float friction, glm::vec2 start);
 	void ErodeWholeMap(int iterations, float volume, float dt, float density, float friction, glm::ivec2 start);
 	glm::vec3 calculateNormal(int x, int y);
 	HeightAndGradient calculateDirection(int x, int y);

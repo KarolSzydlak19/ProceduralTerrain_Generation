@@ -29,16 +29,16 @@ int Window::display(void)
 
     //Hydraulic erosion
     float waterAdditionRate = 0.01f;
-    float sedimentCapacity = 0.00001f;
+    float sedimentCapacity = 250.0f;//0.00001f;
     float evaporationRate = 0.015f;
-    float depositionRate = 0.000001f;
-    float erosionRate = 0.0000001f;
+    float depositionRate = 0.05f; // 0.000001f;
+    float erosionRate = 0.04f;//0.0000001f;
     int hydraulicErosionIterations = 100;
     bool isEroding = false;
     float erosionProgress = 0.0f;
     bool justErodet = false;
     float volume = 50.0f;
-    float dt = 1.2f;
+    float dt = 1.0f;
     float density = 0.1f;
     float friction = 0.04f;
 
@@ -357,9 +357,8 @@ int Window::display(void)
                     terrain.generate();
                 }
                 else if (currentAlgorithm == 1) {
-                    std::cout << "before gen" << std::endl;
+                    std::cout << "here" << std::endl;
                     terrain.generateWithPerlin(baseFrequency, octaves, persistance, noiseAmplitude);
-                    std::cout << "after gen" << std::endl;
                 }
                 terrain.searchEdgeValues();
                 terrain.initObjects();
@@ -389,18 +388,18 @@ int Window::display(void)
             //ImGui::SliderFloat("##farplane", &farplane, 1.0f, 200000000.0f, "%.2f");
             ImGui::End();
             ImGui::Begin("Hydraulic erosion");
-            /*ImGui::Text("Water addition rate");
-            ImGui::SameLine();
-            ImGui::InputFloat("##waterAdd", &waterAdditionRate, 0.0f, 0.0f, "%.6f");
+           // ImGui::Text("Water addition rate");
+            //ImGui::SameLine();
+            //ImGui::InputFloat("##waterAdd", &waterAdditionRate, 0.0f, 0.0f, "%.6f");
             ImGui::Text("Sediment capacity");
             ImGui::SameLine();
-            ImGui::InputFloat("##sedCap", &sedimentCapacity, 0.0f, 0.0f, "%.6f");
-            ImGui::Text("Evaporation rate");*/
+            ImGui::InputFloat("##sedCap", &sedimentCapacity, 0.0f, 0.0f, "%.15f");
+            //ImGui::Text("Evaporation rate");
+            //ImGui::SameLine();
+           // ImGui::InputFloat("##evapRate", &evaporationRate, 0.0f, 0.0f, "%.6f");
+            ImGui::Text("Deposition rate");
             ImGui::SameLine();
-            ImGui::InputFloat("##evapRate", &evaporationRate, 0.0f, 0.0f, "%.6f");
-            /*ImGui::Text("Deposition rate");
-            ImGui::SameLine();
-            ImGui::InputFloat("##deposRate", &depositionRate, 0.0f, 0.0f, "%.6f");*/
+            ImGui::InputFloat("##deposRate", &depositionRate, 0.0f, 0.0f, "%.15f");
             ImGui::Text("Erosion rate");
             ImGui::SameLine();
             ImGui::InputFloat("##erosionRate", &erosionRate, 0.0f, 0.0f, "%.15f");
@@ -416,6 +415,9 @@ int Window::display(void)
             ImGui::Text("Friction");
             ImGui::SameLine();
             ImGui::InputFloat("##frictionIn", &friction, 0.0f, 0.0f, "%.6f");
+            ImGui::Text("Evaporation rate");
+            ImGui::SameLine();
+            ImGui::InputFloat("##evapRate", &evaporationRate, 0.0f, 0.0f, "%.6f");
             ImGui::Text("Iterations");
             ImGui::SameLine();
             ImGui::InputInt("##hyderosioniter", &hydraulicErosionIterations);
@@ -432,11 +434,13 @@ int Window::display(void)
                 for (int q = 0; q < hydraulicErosionIterations; q++) {
                     std::cout << q << std::endl;
                     //hydraulicEroder.ErodeWholeMap(hydraulicErosionIterations, volume, dt, density, friction, glm::ivec2{ 110,110 });
-                    for (int i = 1; i < mapSize - 2; i++) {
-                        for (int j = 1; j < mapSize - 2; j++) {
-                            hydraulicEroder.ErodeWholeMap(hydraulicErosionIterations, volume, dt, density, friction, glm::ivec2{ i,j });
-                        }
+                    for (int i = 1; i < mapSize - 1; i++) {
+                        for (int j = 1; j < mapSize - 1; j++) {
+                            //hydraulicEroder.ErodeWholeMap(hydraulicErosionIterations, volume, dt, density, friction, glm::ivec2{ i,j });
+                            hydraulicEroder.Erode(q, volume, dt, density, friction, glm::ivec2{ i,j });
+                       }
                     }
+                    //hydraulicEroder.Erode(q, volume, dt, density, friction, glm::ivec2{ 0,0 });
                 }
                 terrain.cleanUpObjects();
                 terrain.initAxes();
