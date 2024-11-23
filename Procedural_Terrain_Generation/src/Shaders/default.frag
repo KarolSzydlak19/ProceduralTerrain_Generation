@@ -29,6 +29,15 @@ uniform bool useGrassTex;
 uniform bool useRockTex;
 uniform bool useSoilTex;
 
+//light params
+uniform float ambient;
+uniform float ambientMaterial;
+uniform float vDiffuseLight;
+uniform float vSpecularLight;
+uniform float vDiffuseMaterial;
+uniform float vSpecularMaterial;
+uniform float shininess;
+
 uniform sampler2D noiseTexture;  // Noise texture
 uniform sampler2D snowTexture;   // Snow texture
 uniform sampler2D grassTexture;  // Grass texture
@@ -86,7 +95,7 @@ vec4 blendTextures(float height, vec2 texCoord) {
 
     // If total weight is zero (no textures in range), find the closest texture
 if (totalWeight == 0.0) {
-    float closestDistance = 1e6;  // Initialize with a very large distance
+    float closestDistance = 1e12;  // Initialize with a very large distance
     vec4 closestTexture = vec4(0.0, 0.0, 0.0, 1.0);  // Default to black if no texture is found
 
     // Check distance to snow texture range
@@ -145,8 +154,6 @@ if (totalWeight == 0.0) {
 }
 
 vec4 directLight(vec4 textureColor, vec3 normal, vec3 lightDirection, vec3 viewPos, vec3 fragPos, vec3 lightColor) {
-    float ambientStrength = 0.15f;
-    float specularStrength = 0.50f;
 
     // Normalize the inputs
     vec3 norm = normalize(normal);
@@ -154,16 +161,16 @@ vec4 directLight(vec4 textureColor, vec3 normal, vec3 lightDirection, vec3 viewP
     vec3 viewDir = normalize(viewPos - fragPos);
 
     // Ambient lighting
-    vec3 ambient = ambientStrength * textureColor.rgb;
+    vec3 ambient = ambient * ambientMaterial * textureColor.rgb;
 
     // Diffuse lighting
     float diff = max(dot(norm, lightDir), 0.0f);
-    vec3 diffuse = diff * lightColor * textureColor.rgb;
+    vec3 diffuse = vDiffuseLight * vDiffuseMaterial * diff * lightColor * textureColor.rgb;
 
     // Specular lighting
     vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0f), 16.0f);
-    vec3 specular = spec * specularStrength * textureColor.rgb;
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0f), shininess);
+    vec3 specular = spec * vSpecularLight * vSpecularMaterial * textureColor.rgb;
 
     // Combine the results
     vec3 lighting = ambient + diffuse + specular;

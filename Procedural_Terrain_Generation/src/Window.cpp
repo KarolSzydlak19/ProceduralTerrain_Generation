@@ -48,6 +48,7 @@ int Window::display(void)
     float fov = 120.0f;
     InputMode inputMode = InputMode::CameraControl;
     bool rotateObject = false;
+    float cameraSpeed = 500.0f;
 
     //Texture properties
     float maxTextureNoise = 15000.0f;
@@ -84,6 +85,13 @@ int Window::display(void)
 
     //Lighting
     bool enableShadows = true;
+    float ambient = 0.15f;
+    float ambientMaterial = 1.0f;
+    float vDiffuseMaterial = 0.96f;
+    float vDiffuseLight = 0.86f;
+    float vSpecularMaterial = 0.15f;
+    float vSpecularLight = 0.97f;
+    float shininess = 16.0f;
 
     //Testing
     int numberOfTests = 10;
@@ -172,7 +180,7 @@ int Window::display(void)
     std::cout << "Soil texture ID: " << soilTex.ID << std::endl;
     std::cout << "Stone texture ID: " << stoneTex.ID << std::endl;
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 sunDirection = glm::normalize(glm::vec3(0.2f, 0.6f, 0.1f));  // Direction vector for sunlight
+    glm::vec3 sunDirection = glm::normalize(glm::vec3(0.80f, 0.16f, -0.58f));  // Direction vector for sunlight
 
     // SHADOWS
     ShadowMap shadowMap(2048, 2048);
@@ -234,6 +242,7 @@ int Window::display(void)
             // Updates and exports the camera matrix to the Vertex Shader
             camera.Matrix(shader, "camMatrix");
             camera.updateMatrix(fov, nearplane, farplane);
+            camera.speed = cameraSpeed;
             //lighting
             glm::mat4 model = glm::mat4(1.0f);
 
@@ -265,6 +274,16 @@ int Window::display(void)
             glUniform1i(glGetUniformLocation(shader.ID, "useGrassTex"), useGrassTex);
             glUniform1i(glGetUniformLocation(shader.ID, "useRockTex"), useRockTex);
             glUniform1i(glGetUniformLocation(shader.ID, "useSoilTex"), useSoilTex);
+
+            //light parameters
+            glUniform1f(glGetUniformLocation(shader.ID, "ambient"), ambient);
+            glUniform1f(glGetUniformLocation(shader.ID, "vDiffuseLight"), vDiffuseLight);
+            glUniform1f(glGetUniformLocation(shader.ID, "vSpecularLight"), vSpecularLight);
+            glUniform1f(glGetUniformLocation(shader.ID, "vDiffuseMaterial"), vDiffuseMaterial);
+            glUniform1f(glGetUniformLocation(shader.ID, "vSpecularMaterial"), vSpecularMaterial);
+            glUniform1f(glGetUniformLocation(shader.ID, "shininess"), shininess);
+            glUniform1f(glGetUniformLocation(shader.ID, "ambientMaterial"), ambientMaterial);
+
             shader.setVec3("sunDirection", sunDirection);
             shader.setVec3("lightColor", lightColor);  // Warm white light
             shader.setVec3("viewPos", camera.position);
@@ -382,9 +401,9 @@ int Window::display(void)
             ImGui::Text("Farplane");
             ImGui::SameLine();
             ImGui::InputFloat("##inputFarplane", &farplane);
-            ImGui::Text("Rotate map");
+            ImGui::Text("Camera speed");
             ImGui::SameLine();
-            ImGui::Checkbox("##rotateMap", &rotateObject);
+            ImGui::SliderFloat("##cameraSpeedSlider", &cameraSpeed, 0.1f, 1000.0f, " %.2f");
             //ImGui::SliderFloat("##farplane", &farplane, 1.0f, 200000000.0f, "%.2f");
             ImGui::End();
             ImGui::Begin("Hydraulic erosion");
@@ -434,8 +453,8 @@ int Window::display(void)
                 for (int q = 0; q < hydraulicErosionIterations; q++) {
                     std::cout << q << std::endl;
                     //hydraulicEroder.ErodeWholeMap(hydraulicErosionIterations, volume, dt, density, friction, glm::ivec2{ 110,110 });
-                    for (int i = 1; i < mapSize - 1; i++) {
-                        for (int j = 1; j < mapSize - 1; j++) {
+                    for (int i = 0; i < mapSize - 1; i++) {
+                        for (int j = 0; j < mapSize - 1; j++) {
                             //hydraulicEroder.ErodeWholeMap(hydraulicErosionIterations, volume, dt, density, friction, glm::ivec2{ i,j });
                             hydraulicEroder.Erode(q, volume, dt, density, friction, glm::ivec2{ i,j });
                        }
@@ -499,16 +518,43 @@ int Window::display(void)
             ImGui::End();
 
             ImGui::Begin("Lighting");
-            ImGui::Text("Enable shadows");
+            /*ImGui::Text("Enable shadows");
             ImGui::SameLine();
-            ImGui::Checkbox("##shadowsCheckbox", &enableShadows);
+            ImGui::Checkbox("##shadowsCheckbox", &enableShadows);*/
             ImGui::Text("Directional light");
-            ImGui::Text("Direction");
+            ImGui::Text("Direction        ");
             ImGui::SameLine();
             ImGui::DragFloat3("##lightDirection", glm::value_ptr(sunDirection), 0.01f, -1.0f, 1.0f, "%.2f");
             sunDirection = glm::normalize(sunDirection);  // Normalize direction
-            ImGui::Text("Light Color");
+            ImGui::Text("Light Color      ");
+            ImGui::SameLine();
             ImGui::ColorEdit3("##lightColor", glm::value_ptr(lightColor));
+            ImGui::Text("Ambient light    ");
+            ImGui::SameLine();
+            //ImGui::InputFloat("##ambientInput", &ambient, 0.0f, 0.0f, "%.2f");
+            ImGui::SliderFloat("##amb", &ambient, 0.0f, 1.0f, "%.2f");
+            ImGui::Text("Diffuse light    ");
+            ImGui::SameLine();
+            //ImGui::InputFloat("##DiffuseLight", &vDiffuseLight, 0.0f, 0.0f, "%.2f");
+            ImGui::SliderFloat("##diff", &vDiffuseLight, 0.0f, 1.0f, "%.2f");
+            ImGui::Text("Specular light   ");
+            ImGui::SameLine();
+            //ImGui::InputFloat("##specLightInput", &vSpecularLight, 0.0f, 0.0f, "%.2f");
+            ImGui::SliderFloat("##spec", &vSpecularLight, 0.0f, 1.0f, "%.2f");
+            ImGui::Text("Ambient material ");
+            ImGui::SameLine();
+            ImGui::SliderFloat("##ambientMat", &ambientMaterial, 0.0f, 1.0f, "%.2f");
+            ImGui::Text("Material diffuse ");
+            ImGui::SameLine();
+            //ImGui::InputFloat("##DiffuseMav", &vDiffuseMaterial, 0.0f, 0.0f, "%.2f");
+            ImGui::SliderFloat("##diffm", &vDiffuseMaterial, 0.0f, 1.0f, "%.2f");
+            ImGui::Text("Material specular");
+            ImGui::SameLine();
+            //ImGui::InputFloat("##specMatInput", &vSpecularMaterial, 0.0f, 0.0f, "%.2f");
+            ImGui::SliderFloat("##specm", &vSpecularMaterial, 0.0f, 1.0f, "%.2f");
+            ImGui::Text("Shininess        ");
+            ImGui::SameLine();
+            ImGui::InputFloat("##shininessIn", &shininess, 0.0f, 0.0f, "%.2f");
             ImGui::End();
             // Exportinh
             ImGui::Begin("Export terrain");
@@ -572,7 +618,7 @@ int Window::display(void)
             }
             ImGui::End();
 
-            ImGui::Begin("Test");
+           /* ImGui::Begin("Test");
             ImGui::Text("Number of tests");
             ImGui::SameLine();
             ImGui::InputInt("##numberOfTestsInput", &numberOfTests);
@@ -601,7 +647,7 @@ int Window::display(void)
                 mapBuilder.setOffset(meshPointDistance);
                 genTimer.measurePerlin(numberOfTests, baseFrequency, octaves, persistance, noiseAmplitude);
             }
-            ImGui::End();
+            ImGui::End();*/
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             /* Swap front and back buffers */

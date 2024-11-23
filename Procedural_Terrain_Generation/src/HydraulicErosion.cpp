@@ -71,8 +71,8 @@ void HydraulicErosion::Erode(int iterations, float volume, float dt, float densi
 	float currentVolume = volume;
 	float Scap = sedimentCapacity;
 	//glm::vec3 gravity = glm::normalize(glm::vec3(1.0f, -1.0f, 1.0f)) * 9.81f;
-	newPos.x = randomInt(mapSize - 1);
-	newPos.y = randomInt(mapSize - 1);
+	//newPos.x = randomInt(mapSize - 1);
+	//newPos.y = randomInt(mapSize - 1);
 	while (currentVolume > 0.000000001) {
 		glm::ivec2 iPos = newPos;
 		float lowestN = std::numeric_limits<float>::max();
