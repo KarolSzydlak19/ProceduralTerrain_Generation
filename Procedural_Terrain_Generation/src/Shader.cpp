@@ -125,7 +125,6 @@ void Shader::compileErrors(unsigned int shader, const char* type)
 	}
 }
 
-
 void Shader::setMat4(const std::string& name, const glm::mat4& mat) const
 {
 	GLint location = glGetUniformLocation(ID, name.c_str());

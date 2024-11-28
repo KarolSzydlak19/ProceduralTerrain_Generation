@@ -35,17 +35,17 @@ int Window::display(void)
     float erosionRate = 0.04f;//0.0000001f;
     int hydraulicErosionIterations = 100;
     bool isEroding = false;
-    float erosionProgress = 0.0f;
     bool justErodet = false;
     float volume = 50.0f;
     float dt = 1.0f;
     float density = 0.1f;
     float friction = 0.04f;
-
+    float erosionProgress = 0.0f;
+    float erosionProgressPerIteration = 0.0f;
     //Camera properties
     float nearplane = 10.0f;
     float farplane = 2000000.0f;
-    float fov = 120.0f;
+    float fov = 90.0f;
     InputMode inputMode = InputMode::CameraControl;
     bool rotateObject = false;
     float cameraSpeed = 500.0f;
@@ -76,12 +76,11 @@ int Window::display(void)
     std::string exportState = "";
     std::string saveFilePath = "";
     //Skyboxes 
-    const char* skyTextures[] = { "Default", "Clody sky", "Sunset", "Night"};
+    const char* skyTextures[] = { "Default", "Clody sky", "Sunset" };
     int currentSkyIndex = 0;
-    const char* skyboxes[] = {TEX_DIR "/sunnySkybox.tga",
-    TEX_DIR "/grayCloudsSky.tga",
-    TEX_DIR "/yelSkybox.tga",
-    TEX_DIR "/nightSky.tga" };
+    const char* skyboxes[] = {TEX_DIR "/PureSky.tga",
+    TEX_DIR "/CloudySky2.tga",
+    TEX_DIR "/CloudyAfternoon.tga" };
 
     //Lighting
     bool enableShadows = true;
@@ -159,14 +158,14 @@ int Window::display(void)
     MapBuilder mapBuilder(map, meshPointDistance);
     PerlinNoiseGenerator noiseGen;
     Map terrain(mapSize, roughness, flatteningScale, maxTextureNoise, map, mapBuilder, noiseGen);
-    GenerationTimer genTimer(terrain);
     HydraulicErosion hydraulicEroder(map);
+    GenerationTimer genTimer(terrain, hydraulicEroder);
 
     terrain.generate();
     minTexHeight = terrain.getMinY();
     maxTexHeight = terrain.getMaxY();
 
-    Camera camera(1920, 1080, { 0.0f, 200.0f, 0.0f }, rotateObject);
+    Camera camera(1920, 1080, { 50000.0f, terrain.getMaxY() + 100.0f, 50000.0f}, rotateObject);
 
     // Loop until the user closes the window 
     terrain.initObjects();
@@ -202,7 +201,7 @@ int Window::display(void)
 
     // SKYBOX
     Skybox skybox(skyboxShader);
-    skybox.initTexture(TEX_DIR "/sunnySkybox.tga");
+    skybox.initTexture(skyboxes[currentSkyIndex]);
     shader.Activate();
     glActiveTexture(GL_TEXTURE0);
     snowTex.Bind();
@@ -313,49 +312,49 @@ int Window::display(void)
 
 
             ImGui::Begin("Terrain properties");
-            ImGui::Text("Algorithm");
+            ImGui::Text("Algorithm        ");
             ImGui::SameLine();
             if (ImGui::Combo("##algorithmSelection", &currentAlgorithm, generationTypeLabel, IM_ARRAYSIZE(generationType))) {
                 currentAlgorithm = generationType[currentAlgorithm];
             }
-            ImGui::Text("Use custom seed");
+            ImGui::Text("Use custom seed  ");
             ImGui::SameLine();
             ImGui::Checkbox("##seedChechbox", &useCustomSeed);
-            ImGui::Text("Custom seed");
+            ImGui::Text("Custom seed      ");
             ImGui::SameLine();
             ImGui::InputInt("##customSeed", &customSeed);
             //only in diamond square
             if (currentAlgorithm == 0) {
-                ImGui::Text("Elevation");
+                ImGui::Text("Elevation        ");
                 ImGui::SameLine();
                 ImGui::InputFloat("##elevation", &roughness, 0.0f, 0.0f, "%.2f");
-                ImGui::Text("Flattening scale");
+                ImGui::Text("Flattening scale ");
                 ImGui::SameLine();
                 ImGui::InputFloat("##flatteningScale", &flatteningScale, 0.0f, 0.0f, "%.2f");
             }
             else if (currentAlgorithm == 1) {
-                ImGui::Text("Base frequency");
+                ImGui::Text("Base frequency   ");
                 ImGui::SameLine();
                 ImGui::SliderFloat("##baseFreqSlider", &baseFrequency, 0.0f, 1.0f, "%.2f");
-                ImGui::Text("Octaves");
+                ImGui::Text("Octaves          ");
                 ImGui::SameLine();
                 ImGui::SliderInt("##octavesSlider", &octaves, 1.0f, 10.0f);
-                ImGui::Text("Persistance");
+                ImGui::Text("Persistance      ");
                 ImGui::SameLine();
                 ImGui::SliderFloat("##persistanceSlider", &persistance, 0.0f, 1.0f, "%.2f");
-                ImGui::Text("Amplitude");
+                ImGui::Text("Amplitude        ");
                 ImGui::SameLine();
                 ImGui::InputFloat("##amplitudeInput", &noiseAmplitude, 0.0f, 0.0f, "%.2f");
             }
-            ImGui::Text("Mesh size");
+            ImGui::Text("Mesh size        ");
             ImGui::SameLine();
             if (ImGui::Combo("##meshSizeSelection", &currentMeshSizeIndex, allowedSizesLabels, IM_ARRAYSIZE(allowedSizesLabels))) {
                 mapSize = allowedSizes[currentMeshSizeIndex];
             }
-            ImGui::Text("Mesh offset");
+            ImGui::Text("Mesh offset      ");
             ImGui::SameLine();
-            ImGui::InputFloat("#Distance between mesh points", &meshPointDistance, 0.0f, 0.0f, "%.2f");
-            ImGui::Text("Show mesh");
+            ImGui::InputFloat("##Distance between mesh points", &meshPointDistance, 0.0f, 0.0f, "%.2f");
+            ImGui::Text("Show mesh        ");
             ImGui::SameLine();
             ImGui::Checkbox("##showmeshCheckbox", &enableTriangles);
             if (ImGui::Button("Generate")) {
@@ -384,21 +383,21 @@ int Window::display(void)
                 minTexHeight = terrain.getMinY();
                 maxTexHeight = terrain.getMaxY();
             }
-            ImGui::Text("Scale");
-            ImGui::SameLine();
-            ImGui::SliderFloat("##scaleSlider", &terrainScale, 1.0f, 100.0f, "%.2f");
+            //ImGui::Text("Scale");
+            //ImGui::SameLine();
+            //ImGui::SliderFloat("##scaleSlider", &terrainScale, 1.0f, 100.0f, "%.2f");
 
             ImGui::End();
 
-            ImGui::Begin("Camera");
-            ImGui::Text("Camera fov");
+            ImGui::Begin("Camera  ");
+            ImGui::Text("Camera fov  ");
             ImGui::SameLine();
             ImGui::SliderFloat("##fovSlider", &fov, 60.f, 180.0f, "%.2f");
-            ImGui::Text("Nearplane");
+            ImGui::Text("Nearplane   ");
             ImGui::SameLine();
             ImGui::InputFloat("##inputNearplane", &nearplane);
             //ImGui::SliderFloat("##nearplane", &nearplane, 0.1f, 200000000.0f, "%.2f");
-            ImGui::Text("Farplane");
+            ImGui::Text("Farplane    ");
             ImGui::SameLine();
             ImGui::InputFloat("##inputFarplane", &farplane);
             ImGui::Text("Camera speed");
@@ -412,32 +411,32 @@ int Window::display(void)
             //ImGui::InputFloat("##waterAdd", &waterAdditionRate, 0.0f, 0.0f, "%.6f");
             ImGui::Text("Sediment capacity");
             ImGui::SameLine();
-            ImGui::InputFloat("##sedCap", &sedimentCapacity, 0.0f, 0.0f, "%.15f");
+            ImGui::InputFloat("##sedCap", &sedimentCapacity, 0.0f, 0.0f, "%.6f");
             //ImGui::Text("Evaporation rate");
             //ImGui::SameLine();
            // ImGui::InputFloat("##evapRate", &evaporationRate, 0.0f, 0.0f, "%.6f");
-            ImGui::Text("Deposition rate");
+            ImGui::Text("Deposition rate  ");
             ImGui::SameLine();
-            ImGui::InputFloat("##deposRate", &depositionRate, 0.0f, 0.0f, "%.15f");
-            ImGui::Text("Erosion rate");
+            ImGui::InputFloat("##deposRate", &depositionRate, 0.0f, 0.0f, "%.6f");
+            ImGui::Text("Erosion rate     ");
             ImGui::SameLine();
-            ImGui::InputFloat("##erosionRate", &erosionRate, 0.0f, 0.0f, "%.15f");
-            ImGui::Text("Volume");
+            ImGui::InputFloat("##erosionRate", &erosionRate, 0.0f, 0.0f, "%.6f");
+            ImGui::Text("Volume           ");
             ImGui::SameLine();
             ImGui::InputFloat("##VolumeLevel", &volume, 0.0f, 0.0f, "%.6f");
-            ImGui::Text("dt");
+            ImGui::Text("dt               ");
             ImGui::SameLine();
             ImGui::InputFloat("##dtIn", &dt, 0.0f, 0.0f, "%.6f");
-            ImGui::Text("Density");
-            ImGui::SameLine();
-            ImGui::InputFloat("##densityIn", &density, 0.0f, 0.0f, "%.6f");
-            ImGui::Text("Friction");
+            //ImGui::Text("Density");
+            //ImGui::SameLine();
+            //ImGui::InputFloat("##densityIn", &density, 0.0f, 0.0f, "%.6f");
+            ImGui::Text("Friction         ");
             ImGui::SameLine();
             ImGui::InputFloat("##frictionIn", &friction, 0.0f, 0.0f, "%.6f");
-            ImGui::Text("Evaporation rate");
+            ImGui::Text("Evaporation rate ");
             ImGui::SameLine();
             ImGui::InputFloat("##evapRate", &evaporationRate, 0.0f, 0.0f, "%.6f");
-            ImGui::Text("Iterations");
+            ImGui::Text("Iterations       ");
             ImGui::SameLine();
             ImGui::InputInt("##hyderosioniter", &hydraulicErosionIterations);
             if (ImGui::Button("Perform hydraulic errosion")) {
@@ -448,19 +447,14 @@ int Window::display(void)
                 hydraulicEroder.setDepositionRate(depositionRate);
                 hydraulicEroder.setErosionRate(erosionRate);
                 hydraulicEroder.setMapSize(map.size());
-                //hydraulicEroder.performErosion(hydraulicErosionIterations);
-                //hydraulicEroder.Erode(hydraulicErosionIterations, volume, dt, density, friction);
                 for (int q = 0; q < hydraulicErosionIterations; q++) {
-                    std::cout << q << std::endl;
-                    //hydraulicEroder.ErodeWholeMap(hydraulicErosionIterations, volume, dt, density, friction, glm::ivec2{ 110,110 });
                     for (int i = 0; i < mapSize - 1; i++) {
                         for (int j = 0; j < mapSize - 1; j++) {
-                            //hydraulicEroder.ErodeWholeMap(hydraulicErosionIterations, volume, dt, density, friction, glm::ivec2{ i,j });
                             hydraulicEroder.Erode(q, volume, dt, density, friction, glm::ivec2{ i,j });
                        }
                     }
-                    //hydraulicEroder.Erode(q, volume, dt, density, friction, glm::ivec2{ 0,0 });
                 }
+                erosionProgress = 0.0f;
                 terrain.cleanUpObjects();
                 terrain.initAxes();
                 terrain.initObjects();
@@ -618,13 +612,13 @@ int Window::display(void)
             }
             ImGui::End();
 
-           /* ImGui::Begin("Test");
+            ImGui::Begin("Test");
             ImGui::Text("Number of tests");
             ImGui::SameLine();
             ImGui::InputInt("##numberOfTestsInput", &numberOfTests);
             ImGui::Text("Diamond-Square Algorithm");
             ImGui::SameLine();
-            if (ImGui::Button("Test 1")) {
+            if (ImGui::Button("Test Diamond-Square   ")) {
                 map.resize(mapSize);
                 for (int i = 0; i < mapSize; i++) {
                     map[i].resize(mapSize, { 0.0f, 0.0f, 0.0f });
@@ -636,9 +630,9 @@ int Window::display(void)
                 terrain.setSize(mapSize);
                 genTimer.measureDiamondSquare(numberOfTests);
             }
-            ImGui::Text("Perlin Noise Algorithm");
+            ImGui::Text("Perlin Noise Algorithm  ");
             ImGui::SameLine();
-            if (ImGui::Button("Test 2")) {
+            if (ImGui::Button("Test Perlin Noise     ")) {
                 map.resize(mapSize);
                 for (int i = 0; i < mapSize; i++) {
                     map[i].resize(mapSize, { 0.0f, 0.0f, 0.0f });
@@ -647,7 +641,12 @@ int Window::display(void)
                 mapBuilder.setOffset(meshPointDistance);
                 genTimer.measurePerlin(numberOfTests, baseFrequency, octaves, persistance, noiseAmplitude);
             }
-            ImGui::End();*/
+            ImGui::Text("Hydraulic Erosion       ");
+            ImGui::SameLine();
+            if (ImGui::Button("Test Hydraulic Erosion")) {
+                genTimer.measureHydraulicErosion(numberOfTests, hydraulicErosionIterations, volume, dt, density, friction);
+            }
+            ImGui::End();
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             /* Swap front and back buffers */

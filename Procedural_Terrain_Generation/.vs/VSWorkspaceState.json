@@ -33,6 +33,6 @@
     "\\src\\Textures",
     "\\TimeResults"
   ],
-  "SelectedNode": "\\src\\Shaders\\default.frag",
+  "SelectedNode": "\\src\\Shader.cpp",
   "PreviewInSolutionExplorer": false
 }

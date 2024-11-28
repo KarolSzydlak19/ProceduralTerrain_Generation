@@ -82,9 +82,10 @@ void Skybox::initTexture(const char* image) {
     if (data) {
         int faceWidth = textureWidth / 4;
         int faceHeight = textureHeight / 3;
+        std::cout << "!#!#!#!#! " << textureWidth << "!#!#!#! " << textureHeight << std::endl;
+        std::cout << "!#!#!#!#!FACEWIDTH " << faceWidth << "!#!#!#!FACEHEIGHT " << faceHeight << std::endl;
         stbi_set_flip_vertically_on_load(true);
         GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
-
         // Right face
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, extractFace(data, faceWidth, faceHeight, 2 * faceWidth, faceHeight));
 

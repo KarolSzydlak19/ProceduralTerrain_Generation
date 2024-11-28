@@ -95,7 +95,7 @@ vec4 blendTextures(float height, vec2 texCoord) {
 
     // If total weight is zero (no textures in range), find the closest texture
 if (totalWeight == 0.0) {
-    float closestDistance = 1e12;  // Initialize with a very large distance
+    float closestDistance = 3.402823e38;  // Initialize with a very large distance
     vec4 closestTexture = vec4(0.0, 0.0, 0.0, 1.0);  // Default to black if no texture is found
 
     // Check distance to snow texture range
